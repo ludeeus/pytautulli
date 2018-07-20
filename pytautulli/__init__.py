@@ -6,7 +6,7 @@ file for more details.
 """
 import requests
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 def get_users(host, port, api_key):
     """Get the last activity for the spesified user"""
@@ -44,6 +44,7 @@ def get_user_state(host, port, api_key, username):
     verify_user(host, port, api_key, username)
     cmd = 'get_activity'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
+    user_state = 'not available'
     try:
         result = requests.get(url, timeout=8).json()
         result = result['response']['data']['sessions']
@@ -60,6 +61,7 @@ def get_user_activity(host, port, api_key, username):
     verify_user(host, port, api_key, username)
     cmd = 'get_activity'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
+    user_activity = 'not available'
     try:
         result = requests.get(url, timeout=8).json()
         result = result['response']['data']['sessions']
@@ -98,4 +100,3 @@ def get_home_stats(host, port, api_key):
         except:
             home_stats.update(User="None")
     return home_stats
-
