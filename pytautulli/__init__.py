@@ -9,7 +9,7 @@ import requests
 __version__ = '0.0.4'
 
 def get_users(host, port, api_key):
-    """Get the last activity for the spesified user"""
+    """Get the all users"""
     cmd = 'get_users'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
     users = []
@@ -23,7 +23,7 @@ def get_users(host, port, api_key):
     return users
 
 def verify_user(host, port, api_key, username):
-    """Get the last activity for the spesified user"""
+    """Verify that a user exist"""
     cmd = 'get_users'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
     try:
@@ -40,7 +40,7 @@ def verify_user(host, port, api_key, username):
     return user
 
 def get_user_state(host, port, api_key, username):
-    """Get the last activity for the spesified user"""
+    """Get the state of a user"""
     verify_user(host, port, api_key, username)
     cmd = 'get_activity'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
@@ -76,7 +76,7 @@ def get_user_activity(host, port, api_key, username):
     return user_activity
 
 def get_home_stats(host, port, api_key):
-    """Get the last activity for the spesified user"""
+    """Get the statistics"""
     cmd = 'get_home_stats'
     url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key, cmd)
     home_stats = {}

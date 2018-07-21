@@ -24,18 +24,18 @@ host = '192.168.1.43'
 port = '8181'
 username = 'username'
 
-tautulli.get_users(host, port, api_key)
+pytautulli.get_users(host, port, api_key)
 > ['user1', 'user3']
 
-tautulli.verify_user(host, port, api_key, user)
+pytautulli.verify_user(host, port, api_key, user)
 > True
 
-tautulli.get_user_state(host, port, api_key, user)
+pytautulli.get_user_state(host, port, api_key, user)
 > 'playing'
 
-tautulli.get_user_activity(host, port, api_key, user)
+pytautulli.get_user_activity(host, port, api_key, user)
 > This return a BIG list of all possible values from the activity endpoint.
 
-tautulli.get_home_stats(host, port, api_key)
+pytautulli.get_home_stats(host, port, api_key)
 > {'User': 'user3', 'TV': 'NCIS', 'Movie': 'Bad Boys 2'}
 ```
