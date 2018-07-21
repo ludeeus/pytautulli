@@ -6,7 +6,7 @@ file for more details.
 """
 import requests
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 def get_users(host, port, api_key):
     """Get the last activity for the spesified user"""
