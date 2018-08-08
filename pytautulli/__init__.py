@@ -6,7 +6,7 @@ file for more details.
 """
 import requests
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 def get_users(host, port, api_key):
     """Get the all users"""
@@ -111,6 +111,9 @@ def custom_activity(alist):
         alist['senum'] = senum
         alist['show_senum'] = alist['grandparent_title'] + ' ' + senum
         alist['s_senum_e'] = (alist['grandparent_title'] + ' ' + senum + ' ' + alist['title'])
+        alist['magic_title'] = alist['s_senum_e']
+    elif alist['media_type'] == 'movie':
+        alist['magic_title'] = alist['full_title']
     return alist
 
 
