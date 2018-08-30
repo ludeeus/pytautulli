@@ -1,12 +1,10 @@
 # pytautulli - A python module to get information from Tautulli
 
+[![Build Status](https://travis-ci.org/ludeeus/pytautulli.svg?branch=master)](https://travis-ci.org/ludeeus/pytautulli)
+
 ## Notes
 
-This has been tested with python 3.6  
 This module require API key from Tautulli.  
-This module uses these external libararies:
-
-- requests
 
 ## Install
 
