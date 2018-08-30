@@ -1,7 +1,0 @@
-push_pypi:
-    stage: deploy
-    image: python:3.6.5
-    only:
-        - master
-    script:
-        - curl -sL https://gitlab.com/ludeeus/toolbox/raw/master/CI-Scripts/pypi.sh | bash
