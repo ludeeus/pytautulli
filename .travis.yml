@@ -1,0 +1,24 @@
+language: python
+install: pip install -U pip setuptools wheel
+matrix:
+  fast_finish: true
+  include:
+    - python: "3.5.3"
+      env: PUBLISH=false
+      after_success: coveralls
+    - python: "3.6"
+      env: PUBLISH=true
+  allow_failures:
+    - python: "3.7"
+      dist: xenial
+
+script:
+  - python setup.py test
+
+deploy:
+  provider: pypi
+  user: "$PYPIUSER"
+  password: "$PYPIKEY"
+  on:
+    branch: master
+    condition: $PUBLISH = true
