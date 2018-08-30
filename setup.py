@@ -15,6 +15,7 @@ setuptools.setup(
     author_email="joasoe@gmail.com",
     description="",
     long_description=LONG,
+    install_requires=['requests'],
     long_description_content_type="text/markdown",
     url="https://gitlab.com/ludeeus/pytautulli",
     packages=setuptools.find_packages(),
