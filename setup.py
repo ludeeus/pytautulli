@@ -2,15 +2,12 @@
 Setup configuration
 """
 import setuptools
-import pytautulli
-
-VERSION = pytautulli.__version__
 
 with open("README.md", "r") as fh:
     LONG = fh.read()
 setuptools.setup(
     name="pytautulli",
-    version=VERSION,
+    version="0.0.6",
     author="Joakim Sorensen",
     author_email="joasoe@gmail.com",
     description="",
