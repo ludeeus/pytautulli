@@ -6,8 +6,6 @@ file for more details.
 """
 import requests
 
-__version__ = '0.0.6'
-
 def get_users(host, port, api_key):
     """Get the all users"""
     cmd = 'get_users'
