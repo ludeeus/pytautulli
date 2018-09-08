@@ -1,15 +1,13 @@
-"""
-Setup configuration
-"""
+"""Setup configuration"""
 import setuptools
 
 with open("README.md", "r") as fh:
     LONG = fh.read()
 setuptools.setup(
     name="pytautulli",
-    version="0.0.6",
+    version='0.0.6',
     author="Joakim Sorensen",
-    author_email="joasoe@gmail.com",
+    author_email="ludeeus@gmail.com",
     description="",
     long_description=LONG,
     install_requires=['requests'],

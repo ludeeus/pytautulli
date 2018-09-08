@@ -1,6 +1,6 @@
-# pytautulli - A python module to get information from Tautulli
+# pytautulli [![Build Status](https://travis-ci.org/ludeeus/pytautulli.svg?branch=master)](https://travis-ci.org/ludeeus/pytautulli) [![PyPI version](https://badge.fury.io/py/pytautulli.svg)](https://badge.fury.io/py/pytautulli)
 
-[![Build Status](https://travis-ci.org/ludeeus/pytautulli.svg?branch=master)](https://travis-ci.org/ludeeus/pytautulli)
+_A python module to get information from Tautulli._
 
 ## Notes
 
