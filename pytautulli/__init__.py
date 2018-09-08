@@ -18,7 +18,7 @@ def get_users(host, port, api_key):
         result = result['response']['data']
         for user_data in result:
             users.append(user_data['username'])
-    except:
+    except requests.exceptions.HTTPError:
         users.append('None')
     return users
 
@@ -37,7 +37,7 @@ def verify_user(host, port, api_key, username):
                 break
             else:
                 user = False
-    except:
+    except requests.exceptions.HTTPError:
         user = False
     return user
 
@@ -56,7 +56,7 @@ def get_user_state(host, port, api_key, username):
             if sessions['username'].lower() == username.lower():
                 user_state = sessions['state']
                 break
-    except:
+    except requests.exceptions.HTTPError:
         user_state = 'not available'
     return user_state
 
@@ -77,7 +77,7 @@ def get_user_activity(host, port, api_key, username):
                     user_activity[key] = sessions[key]
                 user_activity = custom_activity(user_activity)
                 break
-    except:
+    except requests.exceptions.HTTPError:
         user_activity = 'not available'
     return user_activity
 
@@ -91,23 +91,23 @@ def get_home_stats(host, port, api_key):
     try:
         result = requests.get(url, timeout=8).json()
         result = result['response']['data']
-    except:
+    except KeyError:
         home_stats.update(Status="not available")
     if result:
         try:
             if result[0]['rows'][0]['title']:
                 home_stats.update(Movie=result[0]['rows'][0]['title'])
-        except:
+        except KeyError:
             home_stats.update(Movie="None")
         try:
             if result[3]['rows'][0]['title']:
                 home_stats.update(TV=result[3]['rows'][0]['title'])
-        except:
+        except KeyError:
             home_stats.update(TV="None")
         try:
             if result[7]['rows'][0]['user']:
                 home_stats.update(User=result[7]['rows'][0]['user'])
-        except:
+        except KeyError:
             home_stats.update(User="None")
     return home_stats
 
