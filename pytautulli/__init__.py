@@ -6,6 +6,7 @@ file for more details.
 """
 import requests
 
+
 def get_users(host, port, api_key):
     """Get the all users."""
     cmd = 'get_users'
@@ -112,7 +113,7 @@ def get_home_stats(host, port, api_key):
 
 
 def custom_activity(alist):
-    """Creates additional activitie keys."""
+    """Create additional activitie keys."""
     if alist['media_type'] == 'episode':
         senum = ('S{0}'.format(alist['parent_media_index'].zfill(2)) +
                  'E{0}'.format(alist['media_index'].zfill(2)))
