@@ -17,9 +17,10 @@ def get_users(host, port, api_key):
         result = result['response']['data']
         for user_data in result:
             users.append(user_data['username'])
-    except:
+    except Exception:
         users.append('None')
     return users
+
 
 def verify_user(host, port, api_key, username):
     """Verify that a user exist."""
@@ -35,9 +36,10 @@ def verify_user(host, port, api_key, username):
                 break
             else:
                 user = False
-    except:
+    except Exception:
         user = False
     return user
+
 
 def get_user_state(host, port, api_key, username):
     """Get the state of a user."""
@@ -53,9 +55,10 @@ def get_user_state(host, port, api_key, username):
             if sessions['username'].lower() == username.lower():
                 user_state = sessions['state']
                 break
-    except:
+    except Exception:
         user_state = 'not available'
     return user_state
+
 
 def get_user_activity(host, port, api_key, username):
     """Get the last activity for the spesified user."""
@@ -73,9 +76,10 @@ def get_user_activity(host, port, api_key, username):
                     user_activity[key] = sessions[key]
                 user_activity = custom_activity(user_activity)
                 break
-    except:
+    except Exception:
         user_activity = 'not available'
     return user_activity
+
 
 def get_home_stats(host, port, api_key):
     """Get the statistics."""
@@ -86,28 +90,29 @@ def get_home_stats(host, port, api_key):
     try:
         result = requests.get(url, timeout=8).json()
         result = result['response']['data']
-    except:
+    except Exception:
         home_stats.update(Status="not available")
     if result:
         try:
             if result[0]['rows'][0]['title']:
                 home_stats.update(Movie=result[0]['rows'][0]['title'])
-        except:
+        except Exception:
             home_stats.update(Movie="None")
         try:
             if result[3]['rows'][0]['title']:
                 home_stats.update(TV=result[3]['rows'][0]['title'])
-        except:
+        except Exception:
             home_stats.update(TV="None")
         try:
             if result[7]['rows'][0]['user']:
                 home_stats.update(User=result[7]['rows'][0]['user'])
-        except:
+        except Exception:
             home_stats.update(User="None")
     return home_stats
 
+
 def custom_activity(alist):
-    "Creates additional activitie keys."
+    """Creates additional activitie keys."""
     if alist['media_type'] == 'episode':
         senum = ('S{0}'.format(alist['parent_media_index'].zfill(2)) +
                  'E{0}'.format(alist['media_index'].zfill(2)))
@@ -122,7 +127,7 @@ def custom_activity(alist):
 
 
 def default_activity_attributes():
-    """Returns default values for the activity_list."""
+    """Return default values for the activity_list."""
     output = {}
     alist = ['_cache_time', 'actors', 'added_at', 'allow_guest', 'art',
              'aspect_ratio', 'audience_rating', 'audio_bitrate',
