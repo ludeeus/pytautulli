@@ -65,7 +65,7 @@ def get_user_state(host, port, api_key, username, schema='http'):
 
 def get_user_activity(host, port, api_key, username, schema='http'):
     """Get the last activity for the spesified user."""
-    verify_user(host, port, api_key, username)
+    verify_user(host, port, api_key, username, schema)
     cmd = 'get_activity'
     url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
                                                       api_key, cmd)
