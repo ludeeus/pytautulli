@@ -4,8 +4,6 @@ A python module to get information from Tautulli.
 This code is released under the terms of the MIT license. See the LICENSE
 file for more details.
 """
-import json
-import ssl
 import requests
 import urllib3
 urllib3.disable_warnings()
@@ -133,10 +131,6 @@ def get_server_stats(host, port, api_key, schema='http'):
         server_stats['lan_bandwidth'] = result['lan_bandwidth']
         server_stats['direct_streams'] = result['stream_count_direct_stream']
     except requests.exceptions.HTTPError:
-        server_stats = {}
-    except json.decoder.JSONDecodeError:
-        server_stats = {}
-    except ssl.SSLError:
         server_stats = {}
     except requests.exceptions.SSLError:
         server_stats = {}
