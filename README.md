@@ -28,6 +28,9 @@ pytautulli.get_users(host, port, api_key)
 pytautulli.verify_user(host, port, api_key, user)
 > True
 
+pytautulli.get_server_stats(host, port, api_key)
+> {'direct_plays': 0, 'wan_bandwidth': 0, 'count_transcode': 0, 'total_bandwidth': 0, 'direct_streams': 0, 'count': '0', 'lan_bandwidth': 0}
+
 pytautulli.get_user_state(host, port, api_key, user)
 > 'playing'
 
@@ -36,4 +39,11 @@ pytautulli.get_user_activity(host, port, api_key, user)
 
 pytautulli.get_home_stats(host, port, api_key)
 > {'User': 'user3', 'TV': 'NCIS', 'Movie': 'Bad Boys 2'}
+```
+
+All functions has `schema='http'`, this can be ovverwritten by;
+
+```python
+schema = 'https'
+pytautulli.get_users(host, port, api_key, schema)
 ```

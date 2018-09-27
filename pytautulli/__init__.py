@@ -4,17 +4,21 @@ A python module to get information from Tautulli.
 This code is released under the terms of the MIT license. See the LICENSE
 file for more details.
 """
+import json
+import ssl
 import requests
+import urllib3
+urllib3.disable_warnings()
 
 
-def get_users(host, port, api_key):
+def get_users(host, port, api_key, schema='http'):
     """Get the all users."""
     cmd = 'get_users'
-    url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key,
-                                                        cmd)
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
     users = []
     try:
-        result = requests.get(url, timeout=8).json()
+        result = requests.get(url, timeout=8, verify=False).json()
         result = result['response']['data']
         for user_data in result:
             users.append(user_data['username'])
@@ -23,13 +27,13 @@ def get_users(host, port, api_key):
     return users
 
 
-def verify_user(host, port, api_key, username):
+def verify_user(host, port, api_key, username, schema='http'):
     """Verify that a user exist."""
     cmd = 'get_users'
-    url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key,
-                                                        cmd)
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
     try:
-        result = requests.get(url, timeout=8).json()
+        result = requests.get(url, timeout=8, verify=False).json()
         result = result['response']['data']
         for user_data in result:
             if user_data['username'].lower() == username.lower():
@@ -42,15 +46,15 @@ def verify_user(host, port, api_key, username):
     return user
 
 
-def get_user_state(host, port, api_key, username):
+def get_user_state(host, port, api_key, username, schema='http'):
     """Get the state of a user."""
     verify_user(host, port, api_key, username)
     cmd = 'get_activity'
-    url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key,
-                                                        cmd)
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
     user_state = 'not available'
     try:
-        result = requests.get(url, timeout=8).json()
+        result = requests.get(url, timeout=8, verify=False).json()
         result = result['response']['data']['sessions']
         for sessions in result:
             if sessions['username'].lower() == username.lower():
@@ -61,15 +65,15 @@ def get_user_state(host, port, api_key, username):
     return user_state
 
 
-def get_user_activity(host, port, api_key, username):
+def get_user_activity(host, port, api_key, username, schema='http'):
     """Get the last activity for the spesified user."""
     verify_user(host, port, api_key, username)
     cmd = 'get_activity'
-    url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key,
-                                                        cmd)
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
     user_activity = default_activity_attributes()
     try:
-        result = requests.get(url, timeout=8).json()
+        result = requests.get(url, timeout=8, verify=False).json()
         result = result['response']['data']['sessions']
         for sessions in result:
             if sessions['username'].lower() == username.lower():
@@ -82,15 +86,15 @@ def get_user_activity(host, port, api_key, username):
     return user_activity
 
 
-def get_home_stats(host, port, api_key):
-    """Get the statistics."""
+def get_most_stats(host, port, api_key, schema='http'):
+    """Get the most * statistics."""
     cmd = 'get_home_stats'
-    url = "http://{}:{}/api/v2?apikey={}&cmd={}".format(host, port, api_key,
-                                                        cmd)
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
     home_stats = {}
     try:
-        result = requests.get(url, timeout=8).json()
-        result = result['response']['data']
+        request = requests.get(url, timeout=8, verify=False).json()
+        result = request['response']['data']
     except KeyError:
         home_stats.update(Status="not available")
     if result:
@@ -111,6 +115,31 @@ def get_home_stats(host, port, api_key):
             home_stats.update(User="None")
     return home_stats
 
+def get_server_stats(host, port, api_key, schema='http'):
+    """Get server statistics."""
+    cmd = 'get_activity'
+    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
+                                                      api_key, cmd)
+    server_stats = {}
+    try:
+        request = requests.get(url, timeout=8, verify=False).json()
+        result = request['response']['data']
+        server_stats['count'] = result['stream_count']
+        server_stats['total_bandwidth'] = result['total_bandwidth']
+        server_stats['count_transcode'] = result['stream_count_transcode']
+        server_stats['wan_bandwidth'] = result['wan_bandwidth']
+        server_stats['direct_plays'] = result['stream_count_direct_play']
+        server_stats['lan_bandwidth'] = result['lan_bandwidth']
+        server_stats['direct_streams'] = result['stream_count_direct_stream']
+    except requests.exceptions.HTTPError:
+        server_stats = {}
+    except json.decoder.JSONDecodeError:
+        server_stats = {}
+    except ssl.SSLError:
+        server_stats = {}
+    except requests.exceptions.SSLError:
+        server_stats = {}
+    return server_stats
 
 def custom_activity(alist):
     """Create additional activitie keys."""
