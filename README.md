@@ -37,7 +37,7 @@ pytautulli.get_user_state(host, port, api_key, user)
 pytautulli.get_user_activity(host, port, api_key, user)
 > This return a BIG list of all possible values from the activity endpoint.
 
-pytautulli.get_home_stats(host, port, api_key)
+pytautulli.get_most_stats(host, port, api_key)
 > {'User': 'user3', 'TV': 'NCIS', 'Movie': 'Bad Boys 2'}
 ```
 
