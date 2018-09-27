@@ -115,6 +115,7 @@ def get_most_stats(host, port, api_key, schema='http'):
             home_stats.update(User="None")
     return home_stats
 
+
 def get_server_stats(host, port, api_key, schema='http'):
     """Get server statistics."""
     cmd = 'get_activity'
@@ -140,6 +141,7 @@ def get_server_stats(host, port, api_key, schema='http'):
     except requests.exceptions.SSLError:
         server_stats = {}
     return server_stats
+
 
 def custom_activity(alist):
     """Create additional activitie keys."""
