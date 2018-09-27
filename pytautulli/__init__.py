@@ -46,7 +46,7 @@ def verify_user(host, port, api_key, username, schema='http'):
 
 def get_user_state(host, port, api_key, username, schema='http'):
     """Get the state of a user."""
-    verify_user(host, port, api_key, username)
+    verify_user(host, port, api_key, username, schema)
     cmd = 'get_activity'
     url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
                                                       api_key, cmd)
