@@ -99,17 +99,17 @@ def get_most_stats(host, port, api_key, schema='http'):
         try:
             if result[0]['rows'][0]['title']:
                 home_stats.update(Movie=result[0]['rows'][0]['title'])
-        except KeyError:
+        except IndexError:
             home_stats.update(Movie="None")
         try:
             if result[3]['rows'][0]['title']:
                 home_stats.update(TV=result[3]['rows'][0]['title'])
-        except KeyError:
+        except IndexError:
             home_stats.update(TV="None")
         try:
             if result[7]['rows'][0]['user']:
                 home_stats.update(User=result[7]['rows'][0]['user'])
-        except KeyError:
+        except IndexError:
             home_stats.update(User="None")
     return home_stats
 
