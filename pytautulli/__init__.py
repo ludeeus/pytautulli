@@ -93,24 +93,24 @@ def get_most_stats(host, port, api_key, schema='http'):
     try:
         request = requests.get(url, timeout=8, verify=False).json()
         result = request['response']['data']
-    except KeyError:
-        home_stats.update(Status="not available")
+    except IndexError:
+        home_stats['Status'] = "not available"
     if result:
         try:
             if result[0]['rows'][0]['title']:
-                home_stats.update(Movie=result[0]['rows'][0]['title'])
+                home_stats['Top Movie'] = result[0]['rows'][0]['title']
         except IndexError:
-            home_stats.update(Movie="None")
+            home_stats['Top Movie'] = None
         try:
             if result[3]['rows'][0]['title']:
-                home_stats.update(TV=result[3]['rows'][0]['title'])
+                home_stats['Top TV Show'] = result[3]['rows'][0]['title']
         except IndexError:
-            home_stats.update(TV="None")
+            home_stats['Top TV Show'] = None
         try:
             if result[7]['rows'][0]['user']:
-                home_stats.update(User=result[7]['rows'][0]['user'])
+                home_stats['Top User'] = result[7]['rows'][0]['user']
         except IndexError:
-            home_stats.update(User="None")
+            home_stats['Top User'] = None
     return home_stats
 
 
