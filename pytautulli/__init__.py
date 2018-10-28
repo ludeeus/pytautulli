@@ -24,8 +24,7 @@ class Tautulli(object):
         self._loop = loop
         self._session = session
         self.api_key = api_key
-        self.ssl = ssl
-        self.schema = 'https' if self.ssl else 'http'
+        self.schema = 'https' if ssl else 'http'
         self.host = host
         self.port = port
         self.connection = None
