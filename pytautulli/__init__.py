@@ -4,137 +4,111 @@ A python module to get information from Tautulli.
 This code is released under the terms of the MIT license. See the LICENSE
 file for more details.
 """
-import requests
-import urllib3
-urllib3.disable_warnings()
+import asyncio
+import logging
+import socket
+
+import aiohttp
+import async_timeout
 
 
-def get_users(host, port, api_key, schema='http'):
-    """Get the all users."""
-    cmd = 'get_users'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    users = []
-    try:
-        result = requests.get(url, timeout=8, verify=False).json()
-        result = result['response']['data']
-        for user_data in result:
-            users.append(user_data['username'])
-    except requests.exceptions.HTTPError:
-        users.append('None')
-    return users
+_LOGGER = logging.getLogger(__name__)
+_BASE_URL = '{schema}://{host}:{port}/api/v2?apikey={api_key}&cmd='
 
 
-def verify_user(host, port, api_key, username, schema='http'):
-    """Verify that a user exist."""
-    cmd = 'get_users'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    try:
-        result = requests.get(url, timeout=8, verify=False).json()
-        result = result['response']['data']
-        for user_data in result:
-            if user_data['username'].lower() == username.lower():
-                user = True
-                break
-            else:
-                user = False
-    except requests.exceptions.HTTPError:
-        user = False
-    return user
+class Tautulli(object):
+    """A class for handling connections with a Tautulli instance."""
 
+    def __init__(self, host, port, api_key, loop, session, ssl=False):
+        """Initialize the connection to a Tautulli instance."""
+        self._loop = loop
+        self._session = session
+        self.api_key = api_key
+        self.ssl = ssl
+        self.schema = 'https' if self.ssl else 'http'
+        self.host = host
+        self.port = port
+        self.connection = None
+        self.tautulli_session_data = {}
+        self.tautulli_home_data = {}
+        self.base_url = _BASE_URL.format(schema=self.schema,
+                                         host=self.host,
+                                         port=self.port,
+                                         api_key=self.api_key)
 
-def get_user_state(host, port, api_key, username, schema='http'):
-    """Get the state of a user."""
-    verify_user(host, port, api_key, username, schema)
-    cmd = 'get_activity'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    user_state = 'not available'
-    try:
-        result = requests.get(url, timeout=8, verify=False).json()
-        result = result['response']['data']['sessions']
-        for sessions in result:
-            if sessions['username'].lower() == username.lower():
-                user_state = sessions['state']
-                break
-    except requests.exceptions.HTTPError:
-        user_state = 'not available'
-    return user_state
-
-
-def get_user_activity(host, port, api_key, username, schema='http'):
-    """Get the last activity for the spesified user."""
-    verify_user(host, port, api_key, username, schema)
-    cmd = 'get_activity'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    user_activity = default_activity_attributes()
-    try:
-        result = requests.get(url, timeout=8, verify=False).json()
-        result = result['response']['data']['sessions']
-        for sessions in result:
-            if sessions['username'].lower() == username.lower():
-                for key in sessions:
-                    user_activity[key] = sessions[key]
-                user_activity = custom_activity(user_activity)
-                break
-    except requests.exceptions.HTTPError:
-        user_activity = 'not available'
-    return user_activity
-
-
-def get_most_stats(host, port, api_key, schema='http'):
-    """Get the most * statistics."""
-    cmd = 'get_home_stats'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    home_stats = {}
-    try:
-        request = requests.get(url, timeout=8, verify=False).json()
-        result = request['response']['data']
-    except IndexError:
-        home_stats['Status'] = "not available"
-    if result:
+    async def test_connection(self):
+        """Test the connection to Tautulli."""
+        cmd = 'get_server_friendly_name'
+        url = self.base_url + cmd
         try:
-            if result[0]['rows'][0]['title']:
-                home_stats['Top Movie'] = result[0]['rows'][0]['title']
-        except IndexError:
-            home_stats['Top Movie'] = None
-        try:
-            if result[3]['rows'][0]['title']:
-                home_stats['Top TV Show'] = result[3]['rows'][0]['title']
-        except IndexError:
-            home_stats['Top TV Show'] = None
-        try:
-            if result[7]['rows'][0]['user']:
-                home_stats['Top User'] = result[7]['rows'][0]['user']
-        except IndexError:
-            home_stats['Top User'] = None
-    return home_stats
+            async with async_timeout.timeout(5, loop=self._loop):
+                response = await self._session.get(url)
+                self.connection = await response.json()
+            logger("Status from Tautulli: " + str(response.status))
 
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
+            msg = "Can not load data from Tautulli: {}".format(url)
+            logger(msg, 40)
 
-def get_server_stats(host, port, api_key, schema='http'):
-    """Get server statistics."""
-    cmd = 'get_activity'
-    url = "{}://{}:{}/api/v2?apikey={}&cmd={}".format(schema, host, port,
-                                                      api_key, cmd)
-    server_stats = {}
-    try:
-        request = requests.get(url, timeout=8, verify=False).json()
-        result = request['response']['data']
-        server_stats['count'] = result['stream_count']
-        server_stats['total_bandwidth'] = result['total_bandwidth']
-        server_stats['count_transcode'] = result['stream_count_transcode']
-        server_stats['wan_bandwidth'] = result['wan_bandwidth']
-        server_stats['direct_plays'] = result['stream_count_direct_play']
-        server_stats['lan_bandwidth'] = result['lan_bandwidth']
-        server_stats['direct_streams'] = result['stream_count_direct_stream']
-    except requests.exceptions.HTTPError:
-        server_stats = {}
-    except requests.exceptions.SSLError:
-        server_stats = {}
-    return server_stats
+    async def get_data(self):
+        """Get Tautulli data."""
+        try:
+            await self.get_session_data()
+            await self.get_home_data()
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
+            msg = "Can not load data from Tautulli."
+            logger(msg, 40)
+
+    async def get_session_data(self):
+        """Get Tautulli sessions."""
+        cmd = 'get_activity'
+        url = self.base_url + cmd
+        try:
+            async with async_timeout.timeout(5, loop=self._loop):
+                response = await self._session.get(url)
+
+            logger("Status from Tautulli: " + str(response.status))
+            self.tautulli_session_data = await response.json()
+            logger(self.tautulli_session_data)
+
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
+            msg = "Can not load data from Tautulli: {}".format(url)
+            logger(msg, 40)
+
+    async def get_home_data(self):
+        """Get Tautulli home stats."""
+        cmd = 'get_home_stats'
+        url = self.base_url + cmd
+        try:
+            async with async_timeout.timeout(5, loop=self._loop):
+                response = await self._session.get(url)
+
+            logger("Status from Tautulli: " + str(response.status))
+            self.tautulli_home_data = await response.json()
+            logger(self.tautulli_home_data)
+
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
+            msg = "Can not load data from Tautulli: {}".format(url)
+            logger(msg, 40)
+
+    @property
+    def connection_status(self):
+        """Return the server stats from Tautulli."""
+        if self.connection['response']['message']:
+            return_value = False
+        else:
+            return_value = True
+        return return_value
+
+    @property
+    def session_data(self):
+        """Return data from Tautulli."""
+        return self.tautulli_session_data['response']['data']
+
+    @property
+    def home_data(self):
+        """Return data from Tautulli."""
+        return self.tautulli_home_data['response']['data']
 
 
 def custom_activity(alist):
@@ -219,3 +193,11 @@ def default_activity_attributes():
     for key in alist:
         output[key] = ""
     return output
+
+
+def logger(message, level=10):
+    """Handle logging."""
+    logging.getLogger(__name__).log(level, str(message))
+
+    # Enable this for local debug:
+    # print('Log level: "' + str(level) + '", message: "' + str(message) + '"')
