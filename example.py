@@ -8,6 +8,7 @@ HOST = '192.168.2.11'
 PORT = '8181'
 API_KEY = '13838dcabfc34f45a6152897fb84c29a'
 
+
 async def test():
     """Example usage of pytautulli."""
     async with aiohttp.ClientSession() as session:
