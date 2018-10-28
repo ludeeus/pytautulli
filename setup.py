@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
     LONG = fh.read()
 setuptools.setup(
     name="pytautulli",
-    version='0.1.4',
+    version='0.2.0',
     author="Joakim Sorensen",
     author_email="ludeeus@gmail.com",
     description="",
     long_description=LONG,
-    install_requires=['requests', 'urllib3'],
+    install_requires=['aiohttp', 'async_timeout'],
     long_description_content_type="text/markdown",
-    url="https://gitlab.com/ludeeus/pytautulli",
+    url="https://github.com/ludeeus/pytautulli",
     packages=setuptools.find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",
