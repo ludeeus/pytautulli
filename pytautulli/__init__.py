@@ -30,6 +30,7 @@ class Tautulli(object):
         self.connection = None
         self.tautulli_session_data = {}
         self.tautulli_home_data = {}
+        self.tautulli_users = []
         self.base_url = _BASE_URL.format(schema=self.schema,
                                          host=self.host,
                                          port=self.port,
@@ -54,6 +55,7 @@ class Tautulli(object):
         try:
             await self.get_session_data()
             await self.get_home_data()
+            await self.get_users()
         except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
             msg = "Can not load data from Tautulli."
             logger(msg, 40)
@@ -90,6 +92,22 @@ class Tautulli(object):
             msg = "Can not load data from Tautulli: {}".format(url)
             logger(msg, 40)
 
+    async def get_users(self):
+        """Get Tautulli home stats."""
+        cmd = 'get_users'
+        url = self.base_url + cmd
+        try:
+            async with async_timeout.timeout(5, loop=self._loop):
+                response = await self._session.get(url)
+
+            logger("Status from Tautulli: " + str(response.status))
+            self.tautulli_users = await response.json()
+            logger(self.tautulli_users)
+
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
+            msg = "Can not load data from Tautulli: {}".format(url)
+            logger(msg, 40)
+
     @property
     def connection_status(self):
         """Return the server stats from Tautulli."""
@@ -103,6 +121,11 @@ class Tautulli(object):
     def session_data(self):
         """Return data from Tautulli."""
         return self.tautulli_session_data['response']['data']
+
+    @property
+    def users(self):
+        """Return data from Tautulli."""
+        return self.tautulli_users['response']['data']
 
     @property
     def home_data(self):
