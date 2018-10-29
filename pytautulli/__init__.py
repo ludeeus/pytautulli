@@ -43,7 +43,11 @@ class Tautulli(object):
         try:
             async with async_timeout.timeout(5, loop=self._loop):
                 response = await self._session.get(url)
-                self.connection = await response.json()
+                connectionstate = await response.json()
+                if connectionstate['response']['message']:
+                    self.connection = False
+                else:
+                    self.connection = True
             logger("Status from Tautulli: " + str(response.status))
 
         except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
@@ -111,11 +115,7 @@ class Tautulli(object):
     @property
     def connection_status(self):
         """Return the server stats from Tautulli."""
-        if self.connection['response']['message']:
-            return_value = False
-        else:
-            return_value = True
-        return return_value
+        return self.connection
 
     @property
     def session_data(self):
