@@ -98,7 +98,6 @@ class Tautulli(object):
             msg = "Can not load data from Tautulli: {}".format(url)
             logger(msg, 40)
 
-
     async def get_users(self):
         """Get Tautulli users."""
         cmd = 'get_users'
@@ -136,7 +135,6 @@ class Tautulli(object):
                                 if key != 'Username':
                                     userdata[username][key] = session[key]
                             break
-
 
             self.tautulli_user_data = userdata
         except (asyncio.TimeoutError, aiohttp.ClientError, KeyError):
