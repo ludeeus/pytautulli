@@ -51,8 +51,9 @@ class Tautulli(object):
                     self.connection = True
             logger("Status from Tautulli: " + str(response.status))
 
-        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
-            msg = "Can not load data from Tautulli: {}".format(url)
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror,
+                AttributeError) as error:
+            msg = "Can not load data from Tautulli: {} - {}".format(url, error)
             logger(msg, 40)
 
     async def get_data(self):
@@ -78,24 +79,46 @@ class Tautulli(object):
             self.tautulli_session_data = await response.json()
             logger(self.tautulli_session_data)
 
-        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
-            msg = "Can not load data from Tautulli: {}".format(url)
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror,
+                AttributeError) as error:
+            msg = "Can not load data from Tautulli: {} - {}".format(url, error)
             logger(msg, 40)
 
     async def get_home_data(self):
         """Get Tautulli home stats."""
         cmd = 'get_home_stats'
         url = self.base_url + cmd
+        data = {}
         try:
             async with async_timeout.timeout(5, loop=self._loop):
-                response = await self._session.get(url)
-
-            logger("Status from Tautulli: " + str(response.status))
-            self.tautulli_home_data = await response.json()
+                request = await self._session.get(url)
+                response = await request.json()
+                for stat in response.get('response', {}).get('data', {}):
+                    if stat.get('stat_id') == 'top_movies':
+                        try:
+                            row = stat.get('rows', {})[0]
+                            data['movie'] = row.get('title')
+                        except (IndexError, KeyError):
+                            data['movie'] = None
+                    if stat.get('stat_id') == 'top_tv':
+                        try:
+                            row = stat.get('rows', {})[0]
+                            data['tv'] = row.get('title')
+                        except (IndexError, KeyError):
+                            data['tv'] = None
+                    if stat.get('stat_id') == 'top_users':
+                        try:
+                            row = stat.get('rows', {})[0]
+                            data['user'] = row.get('user')
+                        except (IndexError, KeyError):
+                            data['user'] = None
+            logger("Status from Tautulli: " + str(request.status))
+            self.tautulli_home_data = data
             logger(self.tautulli_home_data)
 
-        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
-            msg = "Can not load data from Tautulli: {}".format(url)
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror,
+                AttributeError) as error:
+            msg = "Can not load data from Tautulli: {} - {}".format(url, error)
             logger(msg, 40)
 
     async def get_users(self):
@@ -115,14 +138,15 @@ class Tautulli(object):
             self.tautulli_users = users
             logger(self.tautulli_users)
 
-        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror):
-            msg = "Can not load data from Tautulli: {}".format(url)
+        except (asyncio.TimeoutError, aiohttp.ClientError, socket.gaierror,
+                AttributeError) as error:
+            msg = "Can not load data from Tautulli: {} - {}".format(url, error)
             logger(msg, 40)
 
     async def get_user_data(self):
         """Get Tautulli userdata."""
         userdata = {}
-        sessions = self.session_data['sessions']
+        sessions = self.session_data.get('sessions', {})
         try:
             async with async_timeout.timeout(5, loop=self._loop):
                 for username in self.tautulli_users:
@@ -149,7 +173,7 @@ class Tautulli(object):
     @property
     def session_data(self):
         """Return data from Tautulli."""
-        return self.tautulli_session_data['response']['data']
+        return self.tautulli_session_data.get('response', {}).get('data', {})
 
     @property
     def users(self):
@@ -164,7 +188,7 @@ class Tautulli(object):
     @property
     def home_data(self):
         """Return data from Tautulli."""
-        return self.tautulli_home_data['response']['data']
+        return self.tautulli_home_data
 
 
 def logger(message, level=10):
