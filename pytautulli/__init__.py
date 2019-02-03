@@ -42,7 +42,7 @@ class Tautulli(object):
         cmd = 'get_server_friendly_name'
         url = self.base_url + cmd
         try:
-            async with async_timeout.timeout(5, loop=self._loop):
+            async with async_timeout.timeout(8, loop=self._loop):
                 response = await self._session.get(url)
                 connectionstate = await response.json()
                 if connectionstate['response']['message']:
@@ -72,7 +72,7 @@ class Tautulli(object):
         cmd = 'get_activity'
         url = self.base_url + cmd
         try:
-            async with async_timeout.timeout(5, loop=self._loop):
+            async with async_timeout.timeout(8, loop=self._loop):
                 response = await self._session.get(url)
 
             logger("Status from Tautulli: " + str(response.status))
@@ -90,7 +90,7 @@ class Tautulli(object):
         url = self.base_url + cmd
         data = {}
         try:
-            async with async_timeout.timeout(5, loop=self._loop):
+            async with async_timeout.timeout(8, loop=self._loop):
                 request = await self._session.get(url)
                 response = await request.json()
                 for stat in response.get('response', {}).get('data', {}):
@@ -127,7 +127,7 @@ class Tautulli(object):
         url = self.base_url + cmd
         users = []
         try:
-            async with async_timeout.timeout(5, loop=self._loop):
+            async with async_timeout.timeout(8, loop=self._loop):
                 response = await self._session.get(url)
 
             logger("Status from Tautulli: " + str(response.status))
@@ -148,7 +148,7 @@ class Tautulli(object):
         userdata = {}
         sessions = self.session_data.get('sessions', {})
         try:
-            async with async_timeout.timeout(5, loop=self._loop):
+            async with async_timeout.timeout(8, loop=self._loop):
                 for username in self.tautulli_users:
                     userdata[username] = {}
                     userdata[username]['Activity'] = None
