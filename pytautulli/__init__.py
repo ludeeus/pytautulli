@@ -13,13 +13,13 @@ import async_timeout
 
 
 _LOGGER = logging.getLogger(__name__)
-_BASE_URL = '{schema}://{host}:{port}/api/v2?apikey={api_key}&cmd='
+_BASE_URL = '{schema}://{host}:{port}{path}/api/v2?apikey={api_key}&cmd='
 
 
 class Tautulli(object):
     """A class for handling connections with a Tautulli instance."""
 
-    def __init__(self, host, port, api_key, loop, session, ssl=False):
+    def __init__(self, host, port, api_key, loop, session, ssl=False, path=""):
         """Initialize the connection to a Tautulli instance."""
         self._loop = loop
         self._session = session
@@ -27,6 +27,7 @@ class Tautulli(object):
         self.schema = 'https' if ssl else 'http'
         self.host = host
         self.port = port
+        self.path = path
         self.connection = None
         self.tautulli_session_data = {}
         self.tautulli_home_data = {}
@@ -35,6 +36,7 @@ class Tautulli(object):
         self.base_url = _BASE_URL.format(schema=self.schema,
                                          host=self.host,
                                          port=self.port,
+                                         path=self.path,
                                          api_key=self.api_key)
 
     async def test_connection(self):

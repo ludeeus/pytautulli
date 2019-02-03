@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     LONG = fh.read()
 setuptools.setup(
     name="pytautulli",
-    version='0.4.2',
+    version='0.5.1',
     author="Joakim Sorensen",
     author_email="ludeeus@gmail.com",
     description="",
