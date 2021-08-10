@@ -2,16 +2,17 @@
 import asyncio
 import json
 import aiohttp
-from pytautulli import PyTautulli
+from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
-HOST = "192.168.100.3"
-API_KEY = "392a2d57905341acb5bc58c95d4d2795"
+HOST_CONFIGURATION = PyTautulliHostConfiguration(
+    ipaddress="192.168.100.3", api_key="392a2d57905341acb5bc58c95d4d2795"
+)
 
 
 async def async_example():
     """Example usage of pytautulli."""
     async with aiohttp.ClientSession() as session:
-        client = PyTautulli(HOST, API_KEY, session)
+        client = PyTautulli(host_configuration=HOST_CONFIGURATION, session=session)
         print(await client.async_get_users())
 
 

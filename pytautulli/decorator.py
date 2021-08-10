@@ -27,22 +27,20 @@ def api_command(command: str, method: str = "GET"):
         async def wrapper(*args, **kwargs):
             """Wrapper"""
             client: PyTautulli = args[0]
-            request_data = f"api_key={client._api_key}&format=json"
-            url = f"{'https' if client._ssl else 'http'}://{client._host}{':'+str(client._port) if client._port else ''}{client._base_api_path or ''}/api/v2?apikey={client._api_key}&cmd={command}"
-            log_friendly_url = url.replace(client._api_key, "[REDACTED]")
+            url = client._host.api_url(command)
+            log_friendly_url = url.replace(client._host.api_key, "[REDACTED]")
             if kwargs:
                 for key, value in kwargs.items():
-                    request_data += f"&{key}={value}"
+                    url += f"&{key}={value}"
 
-            LOGGER.debug("Requesting %s", url)
+            LOGGER.debug("Requesting %s", log_friendly_url)
             try:
                 async with async_timeout.timeout(10, loop=asyncio.get_event_loop()):
                     request = await client._session.request(
                         method=method,
                         url=url,
                         headers=API_HEADERS,
-                        data=request_data,
-                        verify_ssl=client._verify_ssl,
+                        verify_ssl=client._host.verify_ssl,
                     )
 
                     if request.status != 200:
@@ -74,7 +72,7 @@ def api_command(command: str, method: str = "GET"):
 
             LOGGER.debug("Requesting %s returned %s", log_friendly_url, result)
 
-            response = PyTautulliApiResponse.from_dict(
+            response = PyTautulliApiResponse(
                 {**result.get(ATTR_RESPONSE, {}), "_command": command}
             )
 
