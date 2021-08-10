@@ -37,9 +37,8 @@ class PyTautulliApiBaseModel:
     def __repr__(self) -> str:
         """Representation."""
         attrs = [
-            f"{key}={json.dumps(self._attributes[key]) if not isinstance(self._attributes[key], object) and issubclass(self._attributes[key], PyTautulliApiBaseModel) else self._attributes[key]}"
-            for key in self._attributes
-            if not key.startswith("_") and key != "_command"
+            f"{key}={json.dumps(self.attributes[key]) if not isinstance(self.attributes[key], object) and issubclass(self.attributes[key], PyTautulliApiBaseModel) else self.attributes[key]}"
+            for key in self.attributes
         ]
         return f"{self.__class__.__name__}({', '.join(attrs)})"
 
@@ -49,6 +48,10 @@ class PyTautulliApiBaseModel:
                 self.__setattr__(key, bool(self.__getattribute__(key)))
 
     @property
-    def _attributes(self) -> dict[str, Any]:
-        """Return the attributes."""
-        return {k: v for k, v in self.__dict__.items() if not k.startswith("__")}
+    def attributes(self) -> dict[str, Any]:
+        """Return the class attributes."""
+        return {
+            key: value
+            for key, value in self.__dict__.items()
+            if not key.startswith("_") and key not in ("attributes")
+        }

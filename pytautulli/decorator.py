@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import aiohttp
 import async_timeout
 
-from .const import API_HEADERS, ATTR_RESPONSE, LOGGER
+from .const import API_HEADERS, ATTR_RESPONSE, LOGGER, ATTR_DATA
 from .exceptions import (
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
@@ -88,6 +88,9 @@ def api_command(command: str, datatype: PyTautulliApiBaseModel, method: str = "G
                 ) from exception
 
             LOGGER.debug("Requesting %s returned %s", log_friendly_url, result)
+
+            if func_response := await func(client, **{ATTR_DATA: response.data}):
+                return func_response
 
             return response.data
 
