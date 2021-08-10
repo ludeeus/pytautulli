@@ -5,6 +5,9 @@ from enum import Enum
 from typing import Any
 
 from .base import APIResponseType, PyTautulliApiBaseModel
+from .activity import PyTautulliApiActivity
+from .session import PyTautulliApiSession
+from .user import PyTautulliApiUser
 
 
 class APIResult(str, Enum):
@@ -17,7 +20,11 @@ class APIResult(str, Enum):
 class PyTautulliApiResponse(PyTautulliApiBaseModel):
     """API response model for PyTautulli Api."""
 
-    data: dict[str, Any] | list[dict[str, Any]] | None = None
+    data: dict[str, Any] | list[
+        dict[str, Any]
+    ] | PyTautulliApiActivity | PyTautulliApiSession | list[
+        PyTautulliApiUser
+    ] | None = None
     message: str | None = None
     result: APIResult | None = None
 

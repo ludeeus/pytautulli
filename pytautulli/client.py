@@ -53,10 +53,6 @@ class PyTautulli:
     async def async_get_users(self, **kwargs) -> PyTautulliApiResponse:
         """Get a list of all users that have access to your server."""
 
-    @api_command(command="get_info")
-    async def async_get_settings(self, **kwargs) -> PyTautulliApiResponse:
-        """Gets all settings from the config file."""
-
     @api_command(command="get_server_info")
     async def async_get_server_info(self, **kwargs) -> PyTautulliApiResponse:
         """Get the PMS server information."""
