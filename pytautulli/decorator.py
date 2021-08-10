@@ -2,23 +2,28 @@
 from __future__ import annotations
 
 import asyncio
+import sys
+from traceback import TracebackException
 from typing import TYPE_CHECKING
 
 import aiohttp
 import async_timeout
 
 from .const import API_HEADERS, ATTR_RESPONSE, LOGGER
-from .models import PyTautulliApiResponse
 from .exceptions import (
+    PyTautulliAuthenticationException,
     PyTautulliConnectionException,
     PyTautulliException,
 )
+from .models import PyTautulliApiBaseModel, PyTautulliApiResponse
 
 if TYPE_CHECKING:
     from .client import PyTautulli
 
 
-def api_command(command: str, method: str = "GET"):
+def api_command(
+    command: str, method: str = "GET", datatype: PyTautulliApiBaseModel = None
+):
     """Decorator for Tautulli API request"""
 
     def decorator(func):
@@ -35,7 +40,9 @@ def api_command(command: str, method: str = "GET"):
 
             LOGGER.debug("Requesting %s", log_friendly_url)
             try:
-                async with async_timeout.timeout(10, loop=asyncio.get_event_loop()):
+                async with async_timeout.timeout(
+                    client._request_timeout, loop=asyncio.get_event_loop()
+                ):
                     request = await client._session.request(
                         method=method,
                         url=url,
@@ -43,12 +50,20 @@ def api_command(command: str, method: str = "GET"):
                         verify_ssl=client._host.verify_ssl,
                     )
 
+                    result = await request.json()
+                    response = PyTautulliApiResponse(
+                        data={**result.get(ATTR_RESPONSE, {}), "_command": command},
+                        datatype=datatype,
+                    )
+
                     if request.status != 200:
+
+                        if request.status == 401:
+                            raise PyTautulliAuthenticationException(response.message)
                         raise PyTautulliConnectionException(
                             f"Request for '{log_friendly_url}' failed with status code '{request.status}'"
                         )
 
-                result = await request.json()
             except aiohttp.ClientError as exception:
                 raise PyTautulliConnectionException(
                     f"Request exception for '{log_friendly_url}' with - {exception}"
@@ -59,6 +74,9 @@ def api_command(command: str, method: str = "GET"):
                     f"Request timeout for '{log_friendly_url}'"
                 )
 
+            except PyTautulliAuthenticationException as exception:
+                raise PyTautulliAuthenticationException(exception) from exception
+
             except PyTautulliConnectionException as exception:
                 raise PyTautulliConnectionException(exception) from exception
 
@@ -66,19 +84,12 @@ def api_command(command: str, method: str = "GET"):
                 raise PyTautulliException(exception) from exception
 
             except (Exception, BaseException) as exception:
+                exc_info = TracebackException.from_exception(exception)
                 raise PyTautulliException(
-                    f"Unexpected exception for '{log_friendly_url}' with - {exception}"
+                    f"Unexpected {exc_info.exc_type.__name__} for '{log_friendly_url}' with - {exc_info} ({exc_info.stack})"
                 ) from exception
 
             LOGGER.debug("Requesting %s returned %s", log_friendly_url, result)
-
-            response = PyTautulliApiResponse(
-                {**result.get(ATTR_RESPONSE, {}), "_command": command}
-            )
-
-            #            if response.status == APIStatus.FAIL:
-            #                if response.error.message == "api_key parameter is missing.":
-            #                    raise PyTautulliAuthenticationException("No API key was provided")
 
             return response
 

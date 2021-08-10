@@ -14,7 +14,6 @@ test: ## Run all tests
 lint: ## Lint all files black
 	@isort .
 	@python3 -m black --fast pytautulli tests
-	@python3 -m mypy pytautulli
 
 coverage: ## Check the coverage of the package
 	@python3 -m pytest tests -rxf -x -v -l --cov=./ --cov-report=xml > /dev/null

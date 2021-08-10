@@ -1,7 +1,9 @@
 """Example usage of pytautulli."""
 import asyncio
 import json
+
 import aiohttp
+
 from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
 HOST_CONFIGURATION = PyTautulliHostConfiguration(
@@ -13,7 +15,7 @@ async def async_example():
     """Example usage of pytautulli."""
     async with aiohttp.ClientSession() as session:
         client = PyTautulli(host_configuration=HOST_CONFIGURATION, session=session)
-        print(await client.async_get_users())
+        print(await client.async_get_settings())
 
 
 asyncio.get_event_loop().run_until_complete(async_example())

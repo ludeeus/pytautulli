@@ -1,9 +1,15 @@
 """A class for handling connections with a Tautulli instance."""
 from __future__ import annotations
+
 from aiohttp import ClientSession
 
 from .decorator import api_command
-from .models import PyTautulliApiResponse, PyTautulliHostConfiguration
+from .models import (
+    PyTautulliApiActivity,
+    PyTautulliApiResponse,
+    PyTautulliApiUser,
+    PyTautulliHostConfiguration,
+)
 
 
 class PyTautulli:
@@ -20,6 +26,7 @@ class PyTautulli:
         ssl: bool | None = None,
         verify_ssl: bool | None = None,
         base_api_path: str | None = None,
+        request_timeout: float = 10,
     ) -> None:
         """Initialize"""
         if host_configuration is None:
@@ -32,12 +39,9 @@ class PyTautulli:
 
         self._host = host_configuration
         self._session = session
+        self._request_timeout = request_timeout
 
-    @api_command(command="get_server_friendly_name")
-    async def async_get_server_friendly_name(self, **kwargs) -> PyTautulliApiResponse:
-        """Get the name of the PMS.."""
-
-    @api_command(command="get_activity")
+    @api_command(command="get_activity", datatype=PyTautulliApiActivity)
     async def async_get_activity(self, **kwargs) -> PyTautulliApiResponse:
         """Get the current activity on the PMS."""
 
@@ -45,6 +49,14 @@ class PyTautulli:
     async def async_get_home_stats(self, **kwargs) -> PyTautulliApiResponse:
         """Get the homepage watch statistics."""
 
-    @api_command(command="get_users")
+    @api_command(command="get_users", datatype=PyTautulliApiUser)
     async def async_get_users(self, **kwargs) -> PyTautulliApiResponse:
         """Get a list of all users that have access to your server."""
+
+    @api_command(command="get_info")
+    async def async_get_settings(self, **kwargs) -> PyTautulliApiResponse:
+        """Gets all settings from the config file."""
+
+    @api_command(command="get_server_info")
+    async def async_get_server_info(self, **kwargs) -> PyTautulliApiResponse:
+        """Get the PMS server information."""
