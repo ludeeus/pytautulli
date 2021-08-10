@@ -14,4 +14,8 @@ CONVERT_TO_BOOL = (
     "live",
     "optimized_version",
     "selected",
+    "pms_ssl",
+    "pms_is_remote",
+    "pms_url_manual",
+    "pms_plexpass",
 )

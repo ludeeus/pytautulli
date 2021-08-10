@@ -1,6 +1,5 @@
 """Example usage of pytautulli."""
 import asyncio
-import json
 
 import aiohttp
 
@@ -16,7 +15,7 @@ async def async_example():
     async with aiohttp.ClientSession() as session:
         client = PyTautulli(host_configuration=HOST_CONFIGURATION, session=session)
         data = await client.async_get_server_info()
-        print(data.data)
+        print(data)
 
 
 asyncio.get_event_loop().run_until_complete(async_example())

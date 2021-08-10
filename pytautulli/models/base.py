@@ -26,8 +26,6 @@ class PyTautulliApiBaseModel:
     ) -> None:
         """Init."""
         self._datatype = datatype
-        if command := data.get("_command"):
-            self.__setattr__("_command", command)
         for key, value in data.items():
             if hasattr(self, key):
                 if hasattr(self, f"_generate_{key}"):
@@ -47,7 +45,7 @@ class PyTautulliApiBaseModel:
 
     def __post_init__(self):
         for key in CONVERT_TO_BOOL:
-            if hasattr(self, key):
+            if hasattr(self, key) and self.__getattribute__(key) is not None:
                 self.__setattr__(key, bool(self.__getattribute__(key)))
 
     @property

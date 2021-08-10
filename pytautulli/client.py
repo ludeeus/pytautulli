@@ -1,14 +1,16 @@
 """A class for handling connections with a Tautulli instance."""
 from __future__ import annotations
+from typing import Any
 
 from aiohttp import ClientSession
 
 from .decorator import api_command
 from .models import (
     PyTautulliApiActivity,
-    PyTautulliApiResponse,
     PyTautulliApiUser,
     PyTautulliHostConfiguration,
+    PyTautulliApiHomeStats,
+    PyTautulliApiServerInfo,
 )
 
 
@@ -42,17 +44,17 @@ class PyTautulli:
         self._request_timeout = request_timeout
 
     @api_command(command="get_activity", datatype=PyTautulliApiActivity)
-    async def async_get_activity(self, **kwargs) -> PyTautulliApiResponse:
+    async def async_get_activity(self, **kwargs) -> PyTautulliApiActivity:
         """Get the current activity on the PMS."""
 
-    @api_command(command="get_home_stats")
-    async def async_get_home_stats(self, **kwargs) -> PyTautulliApiResponse:
+    @api_command(command="get_home_stats", datatype=PyTautulliApiHomeStats)
+    async def async_get_home_stats(self, **kwargs) -> PyTautulliApiHomeStats:
         """Get the homepage watch statistics."""
 
     @api_command(command="get_users", datatype=PyTautulliApiUser)
-    async def async_get_users(self, **kwargs) -> PyTautulliApiResponse:
+    async def async_get_users(self, **kwargs) -> PyTautulliApiUser:
         """Get a list of all users that have access to your server."""
 
-    @api_command(command="get_server_info")
-    async def async_get_server_info(self, **kwargs) -> PyTautulliApiResponse:
+    @api_command(command="get_server_info", datatype=PyTautulliApiServerInfo)
+    async def async_get_server_info(self, **kwargs) -> PyTautulliApiServerInfo:
         """Get the PMS server information."""

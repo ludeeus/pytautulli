@@ -21,9 +21,7 @@ if TYPE_CHECKING:
     from .client import PyTautulli
 
 
-def api_command(
-    command: str, method: str = "GET", datatype: PyTautulliApiBaseModel = None
-):
+def api_command(command: str, datatype: PyTautulliApiBaseModel, method: str = "GET"):
     """Decorator for Tautulli API request"""
 
     def decorator(func):
@@ -52,7 +50,7 @@ def api_command(
 
                     result = await request.json()
                     response = PyTautulliApiResponse(
-                        data={**result.get(ATTR_RESPONSE, {}), "_command": command},
+                        data=result.get(ATTR_RESPONSE, {}),
                         datatype=datatype,
                     )
 
@@ -91,7 +89,7 @@ def api_command(
 
             LOGGER.debug("Requesting %s returned %s", log_friendly_url, result)
 
-            return response
+            return response.data
 
         return wrapper
 
