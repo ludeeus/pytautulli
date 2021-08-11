@@ -52,7 +52,7 @@ class PyTautulli:
         """Get the homepage watch statistics."""
 
     @api_command(command="get_users", datatype=PyTautulliApiUser)
-    async def async_get_users(self, **kwargs) -> PyTautulliApiUser:
+    async def async_get_users(self, **kwargs) -> list[PyTautulliApiUser]:
         """Get a list of all users that have access to your server."""
 
     @api_command(command="get_server_info", datatype=PyTautulliApiServerInfo)

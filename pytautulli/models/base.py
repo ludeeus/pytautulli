@@ -8,6 +8,18 @@ from typing import Any
 from .const import CONVERT_TO_BOOL
 
 
+class PyTautulliJJSONEncoder(json.JSONEncoder):
+    """Custom JSON encoder."""
+
+    def default(self, obj):
+        """Default JSON encoder."""
+        if isinstance(obj, PyTautulliApiBaseModel):
+            return obj.attributes
+        if isinstance(obj, Enum):
+            return obj.name
+        return json.JSONEncoder.default(self, obj)
+
+
 class APIResponseType(str, Enum):
     """ApiResponseType."""
 
@@ -37,8 +49,9 @@ class PyTautulliApiBaseModel:
     def __repr__(self) -> str:
         """Representation."""
         attrs = [
-            f"{key}={json.dumps(self.attributes[key]) if not isinstance(self.attributes[key], object) and issubclass(self.attributes[key], PyTautulliApiBaseModel) else self.attributes[key]}"
+            f"{key}={json.dumps(self.attributes[key], cls=PyTautulliJJSONEncoder)}"
             for key in self.attributes
+            if self.attributes[key] is not None and "token" not in key
         ]
         return f"{self.__class__.__name__}({', '.join(attrs)})"
 

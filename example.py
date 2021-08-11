@@ -14,7 +14,7 @@ async def async_example():
     """Example usage of pytautulli."""
     async with aiohttp.ClientSession() as session:
         client = PyTautulli(host_configuration=HOST_CONFIGURATION, session=session)
-        data = await client.async_get_server_info()
+        data = await client.async_get_users()
         print(data)
 
 

@@ -25,3 +25,8 @@ class PyTautulliApiUser(PyTautulliApiBaseModel):
     thumb: str | None = None
     user_id: int | None = None
     username: str | None = None
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.shared_libraries:
+            self.shared_libraries = self.shared_libraries.split(";")
