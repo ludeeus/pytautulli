@@ -49,9 +49,9 @@ class PyTautulliApiBaseModel:
     def __repr__(self) -> str:
         """Representation."""
         attrs = [
-            f"{key}={json.dumps(self.attributes[key], cls=PyTautulliJJSONEncoder)}"
+            f"{key}={json.dumps(self.__dict__[key], cls=PyTautulliJJSONEncoder)}"
             for key in self.attributes
-            if self.attributes[key] is not None and "token" not in key
+            if self.__dict__[key] is not None and "token" not in key
         ]
         return f"{self.__class__.__name__}({', '.join(attrs)})"
 
@@ -63,8 +63,8 @@ class PyTautulliApiBaseModel:
     @property
     def attributes(self) -> dict[str, Any]:
         """Return the class attributes."""
-        return {
-            key: value
-            for key, value in self.__dict__.items()
+        return tuple(
+            key
+            for key in self.__dict__
             if not key.startswith("_") and key not in ("attributes")
-        }
+        )
