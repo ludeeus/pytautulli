@@ -1,10 +1,9 @@
 """Example usage of pytautulli."""
 import asyncio
-
 from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
 IP = "192.168.100.3"
-TOKEN = "392a2d57905341acb5bc58c95d4d2795"
+TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 
 async def async_example():
