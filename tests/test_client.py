@@ -1,10 +1,8 @@
 import asyncio
 from pytautulli.decorator import api_command
-from _pytest.python_api import raises
 import aiohttp
 import pytest
 from aiohttp.client import ClientSession
-from unittest.mock import patch
 from pytautulli import (
     PyTautulli,
     PyTautulliException,
@@ -12,9 +10,9 @@ from pytautulli import (
     PyTautulliConnectionException,
 )
 from tests.common import (
+    MockResponse,
     TEST_HOST_CONFIGURATION,
     MockedRequests,
-    mock_response,
 )
 
 
@@ -93,43 +91,44 @@ async def test_async_command(client: PyTautulli, requests: MockedRequests):
 
 
 @pytest.mark.asyncio
-async def test_async_authentication_failure(
-    client: PyTautulli, requests: MockedRequests
-):
+async def test_async_authentication_failure(client: PyTautulli, response: MockResponse):
     """test_async_authentication_failure."""
-    mock_response(client, status=401, message="No authentication")
+    response.mock_status = 401
+    response.mock_message = "No authentication"
 
     with pytest.raises(PyTautulliAuthenticationException, match="No authentication"):
         await client.async_command("test_command")
 
 
 @pytest.mark.asyncio
-async def test_async_connection_error(client: PyTautulli, requests: MockedRequests):
+async def test_async_connection_error(client: PyTautulli, response: MockResponse):
     """test_async_authentication_failure."""
-    mock_response(client, status=500)
+    response.mock_status = 500
 
     with pytest.raises(
         PyTautulliConnectionException, match="failed with status code '500'"
     ):
         await client.async_command("test_command")
 
-    mock_response(client, raises=aiohttp.ClientError)
+    response.mock_status = 200
+    response.mock_raises = aiohttp.ClientError
+
     with pytest.raises(PyTautulliConnectionException):
         await client.async_command("test_command")
 
-    mock_response(client, raises=asyncio.TimeoutError)
+    response.mock_raises = asyncio.TimeoutError
     with pytest.raises(PyTautulliConnectionException):
         await client.async_command("test_command")
 
-    mock_response(client, raises=PyTautulliException)
+    response.mock_raises = PyTautulliException
     with pytest.raises(PyTautulliException):
         await client.async_command("test_command")
 
-    mock_response(client, raises=Exception)
+    response.mock_raises = Exception
     with pytest.raises(PyTautulliException):
         await client.async_command("test_command")
 
-    mock_response(client, raises=BaseException)
+    response.mock_raises = BaseException
     with pytest.raises(PyTautulliException):
         await client.async_command("test_command")
 

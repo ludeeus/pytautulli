@@ -17,10 +17,16 @@ def requests():
 
 
 @pytest.fixture()
-async def client_session(requests):
+def response():
+    yield MockResponse()
+
+
+@pytest.fixture()
+async def client_session(response, requests):
     async def _mocked_request(*args, **kwargs):
+        response.url = args[1]
         requests.add(args[1])
-        return MockResponse(args[1])
+        return response
 
     async with ClientSession() as session:
         requests.clear()

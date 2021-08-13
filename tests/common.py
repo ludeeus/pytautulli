@@ -1,24 +1,13 @@
 import json
 import os
 
-from pytautulli import PyTautulliHostConfiguration, PyTautulli
+from pytautulli import PyTautulliHostConfiguration
 
 TEST_RESPONSE_HEADERS = {"Content-Type": "application/json"}
 
 TEST_HOST_CONFIGURATION = PyTautulliHostConfiguration(
     ipaddress="127.0.0.1", api_token="ur1234567-0abc12de3f456gh7ij89k012"
 )
-
-
-def mock_response(client: PyTautulli, status=200, data=None, message=None, raises=None):
-    """Mock a response from the API."""
-
-    async def _mocked_request(*args, **kwargs):
-        if raises:
-            raise raises
-        return MockResponse(args[1], status=status, data=data, message=message)
-
-    client._session._request = _mocked_request
 
 
 def fixture(filename, asjson=True):
@@ -31,19 +20,25 @@ def fixture(filename, asjson=True):
 
 
 class MockResponse:
-    def __init__(self, url: str, status=200, data=None, message=None):
-        self.url = url
-        self.status = status
-        self.data = data
-        self.message = message
+    url = ""
+    mock_status = 200
+    mock_message = None
+    mock_data = None
+    mock_raises = None
+
+    @property
+    def status(self):
+        return self.mock_status
 
     async def json(self):
-        if self.data or self.message:
+        if self.mock_raises:
+            raise self.mock_raises
+        if self.mock_data or self.mock_message:
             return {
                 "response": {
-                    "data": self.data,
-                    "message": self.message,
-                    "result": "success" if self.status == 200 else "failure",
+                    "data": self.mock_data,
+                    "message": self.mock_message,
+                    "result": "success" if self.mock_status == 200 else "failure",
                 }
             }
         cmd = self.url.split("&cmd=")[1].split("&")[0]
