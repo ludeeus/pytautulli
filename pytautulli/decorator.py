@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import aiohttp
 import async_timeout
 
-from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, HTTPMethod, LOGGER
+from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, LOGGER, HTTPMethod
 from .exceptions import (
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
@@ -34,13 +34,12 @@ def api_command(
         async def wrapper(*args, **kwargs):
             """Wrapper"""
             client: PyTautulli = args[0]
-            url = client._host.api_url(command)
-            log_friendly_url = url.replace(client._host.api_key, "[REDACTED]")
+            url = client._host.api_url(command if command != "command" else args[1])
             if kwargs:
                 for key, value in kwargs.items():
                     url += f"&{key}={value}"
 
-            LOGGER.debug("Requesting %s", log_friendly_url)
+            LOGGER.debug("Requesting %s", client.redact_string(url))
             try:
                 async with async_timeout.timeout(
                     client._request_timeout, loop=asyncio.get_event_loop()
@@ -53,6 +52,7 @@ def api_command(
                     )
 
                     result = await request.json()
+
                     response = PyTautulliApiResponse(
                         data=result.get(ATTR_RESPONSE, {}),
                         datatype=datatype,
@@ -61,40 +61,50 @@ def api_command(
                     if request.status != 200:
 
                         if request.status == 401:
-                            raise PyTautulliAuthenticationException(response.message)
+                            raise PyTautulliAuthenticationException(
+                                client, response.message
+                            )
                         raise PyTautulliConnectionException(
-                            f"Request for '{log_friendly_url}' failed with status code '{request.status}'"
+                            client,
+                            f"Request for '{url}' failed with status code '{request.status}'",
                         )
+
+                LOGGER.debug(
+                    "Requesting %s returned %s", client.redact_string(url), result
+                )
+
+                if func_response := await func(
+                    *args, **{**kwargs, ATTR_DATA: response.data}
+                ):
+                    return func_response
 
             except aiohttp.ClientError as exception:
                 raise PyTautulliConnectionException(
-                    f"Request exception for '{log_friendly_url}' with - {exception}"
+                    client,
+                    f"Request exception for '{url}' with - {exception}",
                 ) from exception
 
             except asyncio.TimeoutError:
                 raise PyTautulliConnectionException(
-                    f"Request timeout for '{log_friendly_url}'"
+                    client, f"Request timeout for '{url}'"
                 )
 
             except PyTautulliAuthenticationException as exception:
-                raise PyTautulliAuthenticationException(exception) from exception
-
-            except PyTautulliConnectionException as exception:
-                raise PyTautulliConnectionException(exception) from exception
-
-            except PyTautulliException as exception:
-                raise PyTautulliException(exception) from exception
-
-            except (Exception, BaseException) as exception:
-                exc_info = TracebackException.from_exception(exception)
-                raise PyTautulliException(
-                    f"Unexpected {exc_info.exc_type.__name__} for '{log_friendly_url}' with - {exc_info} ({exc_info.stack})"
+                raise PyTautulliAuthenticationException(
+                    client, exception
                 ) from exception
 
-            LOGGER.debug("Requesting %s returned %s", log_friendly_url, result)
+            except PyTautulliConnectionException as exception:
+                raise PyTautulliConnectionException(client, exception) from exception
 
-            if func_response := await func(client, **{ATTR_DATA: response.data}):
-                return func_response
+            except PyTautulliException as exception:
+                raise PyTautulliException(client, exception) from exception
+
+            except (Exception, BaseException) as exception:
+                raise PyTautulliException(client, exception) from exception
+
+            if client._raw_response or command == "command":
+                return result
 
             return response.data
 

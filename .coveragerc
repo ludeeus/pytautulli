@@ -8,6 +8,9 @@ omit =
     # omit tests
     tests/*
 
+    # omit example
+    example.py
+
 [report]
 exclude_lines =
     if TYPE_CHECKING:

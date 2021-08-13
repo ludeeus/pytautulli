@@ -1,6 +1,6 @@
 """Pytautulli constants."""
-from logging import Logger, getLogger
 from enum import Enum
+from logging import Logger, getLogger
 
 API_HEADERS = {"Content-Type": "application/json"}
 

@@ -1,9 +1,13 @@
 import json
 import os
 
-TEST_API_TOKEN = "ur1234567-0abc12de3f456gh7ij89k012"
-TEST_HOST = "127.0.0.1"
+from pytautulli import PyTautulliHostConfiguration
+
 TEST_RESPONSE_HEADERS = {"Content-Type": "application/json"}
+
+TEST_HOST_CONFIGURATION = PyTautulliHostConfiguration(
+    ipaddress="127.0.0.1", api_token="ur1234567-0abc12de3f456gh7ij89k012"
+)
 
 
 def fixture(filename, asjson=True):

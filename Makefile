@@ -18,3 +18,6 @@ lint: ## Lint all files black
 coverage: ## Check the coverage of the package
 	@python3 -m pytest tests -rxf -x -v -l --cov=./ --cov-report=xml > /dev/null
 	@coverage report
+
+setup: ## Setup the package
+	@python3 setup.py develop
