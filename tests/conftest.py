@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 
 from pytautulli import PyTautulli
 
-from .common import TEST_HOST_CONFIGURATION, MockResponse, MockedRequests
+from .common import TEST_HOST_CONFIGURATION, MockedRequests, MockResponse
 
 logging.basicConfig(level=logging.DEBUG)
 pytestmark = pytest.mark.asyncio

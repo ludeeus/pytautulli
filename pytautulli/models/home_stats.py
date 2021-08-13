@@ -46,7 +46,7 @@ class PyTautulliApiHomeStats(PyTautulliApiBaseModel):
     stat_id: str | None = None
     stat_type: str | None = None
     stat_title: str | None = None
-    rows: list[PyTautulliApiHomeStats] = None
+    rows: list[PyTautulliApiHomeStatsRow] = None
 
     def __post_init__(self):
         super().__post_init__()
