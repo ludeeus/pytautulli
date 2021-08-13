@@ -1,4 +1,6 @@
 import asyncio
+import json
+from pytautulli.const import HTTPMethod
 from pytautulli.decorator import api_command
 import aiohttp
 import pytest
@@ -8,11 +10,14 @@ from pytautulli import (
     PyTautulliException,
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
+    PyTautulliJJSONEncoder,
+    PyTautulliApiResponse,
 )
 from tests.common import (
     MockResponse,
     TEST_HOST_CONFIGURATION,
     MockedRequests,
+    fixture,
 )
 
 
@@ -29,7 +34,16 @@ async def test_create_client():
         ssl=False,
         port=8181,
         verify_ssl=True,
-        base_api_path="",
+        base_api_path="/test",
+    ) as client:
+        assert (
+            client._host.api_url("")
+            == f"http://{TEST_HOST_CONFIGURATION.ipaddress}:8181/test/api/v2?apikey={TEST_HOST_CONFIGURATION.api_token}&cmd="
+        )
+
+    async with PyTautulli(
+        api_token=TEST_HOST_CONFIGURATION.api_token,
+        url=f"http://{TEST_HOST_CONFIGURATION.ipaddress}:8181",
     ) as client:
         assert client._host.api_url("") == target_url
 
@@ -144,3 +158,20 @@ async def test_method_data(client: PyTautulli):
     client.async_command = async_command
 
     await client.async_command(client, "test_command")
+
+
+@pytest.mark.asyncio
+async def test_base(client: PyTautulli):
+    """test_method_data."""
+    data = await client.async_get_activity()
+    assert "PyTautulliApiActivity" in repr(data)
+
+
+def test_json():
+    """Test json."""
+    encoder = PyTautulliJJSONEncoder()
+
+    assert encoder.default(PyTautulliApiResponse(fixture("test_command"))) == {}
+    assert encoder.default(HTTPMethod.GET) == "GET"
+    with pytest.raises(TypeError):
+        assert encoder.default(None)

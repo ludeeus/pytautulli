@@ -63,8 +63,8 @@ class PyTautulliApiBaseModel:
     @property
     def attributes(self) -> dict[str, Any]:
         """Return the class attributes."""
-        return tuple(
-            key
+        return {
+            key: json.dumps(self.__dict__[key], cls=PyTautulliJJSONEncoder)
             for key in self.__dict__
-            if not key.startswith("_") and key not in ("attributes")
-        )
+            if not key.startswith("_")
+        }

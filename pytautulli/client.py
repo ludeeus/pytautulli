@@ -1,6 +1,6 @@
 """A class for handling connections with a Tautulli instance."""
 from __future__ import annotations
-
+from copy import copy
 from typing import Any
 
 from aiohttp import ClientSession
@@ -42,6 +42,8 @@ class PyTautulli:
             host_configuration = PyTautulliHostConfiguration(
                 hostname=hostname, ipaddress=ipaddress, url=url, api_token=api_token
             )
+        else:
+            host_configuration = copy(host_configuration)
 
         if port is not None:
             host_configuration.port = port

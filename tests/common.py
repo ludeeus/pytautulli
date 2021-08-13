@@ -31,8 +31,8 @@ class MockResponse:
         return self.mock_status
 
     async def json(self):
-        if self.mock_raises:
-            raise self.mock_raises
+        if self.mock_raises is not None:
+            raise self.mock_raises  # pylint: disable=raising-bad-type
         if self.mock_data or self.mock_message:
             return {
                 "response": {
