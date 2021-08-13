@@ -1,5 +1,8 @@
-branches: dev
+change-template: '- #$NUMBER $TITLE @$AUTHOR'
+sort-direction: ascending
+exclude-labels:
+  - "release-drafter-ignore"
 template: |
-  ## Changes
+  ## What’s Changed
 
   $CHANGES
