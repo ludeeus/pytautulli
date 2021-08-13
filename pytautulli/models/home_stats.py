@@ -1,5 +1,6 @@
 """PyTautulliApiHomeStats."""
 from __future__ import annotations
+
 from pytautulli.models.user import PyTautulliApiUser
 
 from .base import APIResponseType, PyTautulliApiBaseModel

@@ -4,8 +4,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from .base import APIResponseType, PyTautulliApiBaseModel
 from .activity import PyTautulliApiActivity
+from .base import APIResponseType, PyTautulliApiBaseModel
 from .session import PyTautulliApiSession
 from .user import PyTautulliApiUser
 

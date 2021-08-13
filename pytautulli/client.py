@@ -1,5 +1,6 @@
 """A class for handling connections with a Tautulli instance."""
 from __future__ import annotations
+
 from typing import Any
 
 from aiohttp import ClientSession
@@ -7,10 +8,10 @@ from aiohttp import ClientSession
 from .decorator import api_command
 from .models import (
     PyTautulliApiActivity,
-    PyTautulliApiUser,
-    PyTautulliHostConfiguration,
     PyTautulliApiHomeStats,
     PyTautulliApiServerInfo,
+    PyTautulliApiUser,
+    PyTautulliHostConfiguration,
 )
 
 

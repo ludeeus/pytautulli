@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import aiohttp
 import async_timeout
 
-from .const import API_HEADERS, ATTR_RESPONSE, LOGGER, ATTR_DATA
+from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, LOGGER
 from .exceptions import (
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
