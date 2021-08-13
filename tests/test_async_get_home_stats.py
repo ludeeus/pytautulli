@@ -1,4 +1,5 @@
 import pytest
+
 from pytautulli import PyTautulli
 
 

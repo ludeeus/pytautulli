@@ -1,5 +1,6 @@
 """Example usage of pytautulli."""
 import asyncio
+
 from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
 IP = "192.168.100.3"
