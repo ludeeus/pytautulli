@@ -1,8 +1,21 @@
+import asyncio
+from pytautulli.decorator import api_command
+from _pytest.python_api import raises
+import aiohttp
 import pytest
 from aiohttp.client import ClientSession
-
-from pytautulli import PyTautulli, PyTautulliException
-from tests.common import TEST_HOST_CONFIGURATION
+from unittest.mock import patch
+from pytautulli import (
+    PyTautulli,
+    PyTautulliException,
+    PyTautulliAuthenticationException,
+    PyTautulliConnectionException,
+)
+from tests.common import (
+    TEST_HOST_CONFIGURATION,
+    MockedRequests,
+    mock_response,
+)
 
 
 @pytest.mark.asyncio
@@ -40,14 +53,13 @@ async def test_create_client():
 
 
 @pytest.mark.asyncio
-async def test_redact_token():
+async def test_redact_token(client: PyTautulli, caplog: pytest.LogCaptureFixture):
     """Test method for token redaction."""
     async with PyTautulli(host_configuration=TEST_HOST_CONFIGURATION) as client:
         assert (
             client.redact_string(f"String with {client._host.api_token}")
             == "String with [REDACTED_API_TOKEN]"
         )
-
     async with PyTautulli(
         host_configuration=TEST_HOST_CONFIGURATION, redact=False
     ) as client:
@@ -55,3 +67,81 @@ async def test_redact_token():
             client.redact_string(f"String with {client._host.api_token}")
             == f"String with {client._host.api_token}"
         )
+
+
+@pytest.mark.asyncio
+async def test_redact_token_log(client: PyTautulli, caplog: pytest.LogCaptureFixture):
+    """Test method for token redaction."""
+    await client.async_command("test_command")
+    assert "?apikey=[REDACTED_API_TOKEN]&" in caplog.text
+    assert client._host.api_token not in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_async_command(client: PyTautulli, requests: MockedRequests):
+    """Test async command."""
+    data = await client.async_command("test_command")
+    assert isinstance(data, dict)
+    assert data.get("response").get("data") == {}
+
+    assert requests.count == 1
+    assert requests.has("&cmd=test_command")
+
+    data = await client.async_command("test_command", **{"limit": 1})
+    assert requests.count == 2
+    assert requests.has("&cmd=test_command&limit=1")
+
+
+@pytest.mark.asyncio
+async def test_async_authentication_failure(
+    client: PyTautulli, requests: MockedRequests
+):
+    """test_async_authentication_failure."""
+    mock_response(client, status=401, message="No authentication")
+
+    with pytest.raises(PyTautulliAuthenticationException, match="No authentication"):
+        await client.async_command("test_command")
+
+
+@pytest.mark.asyncio
+async def test_async_connection_error(client: PyTautulli, requests: MockedRequests):
+    """test_async_authentication_failure."""
+    mock_response(client, status=500)
+
+    with pytest.raises(
+        PyTautulliConnectionException, match="failed with status code '500'"
+    ):
+        await client.async_command("test_command")
+
+    mock_response(client, raises=aiohttp.ClientError)
+    with pytest.raises(PyTautulliConnectionException):
+        await client.async_command("test_command")
+
+    mock_response(client, raises=asyncio.TimeoutError)
+    with pytest.raises(PyTautulliConnectionException):
+        await client.async_command("test_command")
+
+    mock_response(client, raises=PyTautulliException)
+    with pytest.raises(PyTautulliException):
+        await client.async_command("test_command")
+
+    mock_response(client, raises=Exception)
+    with pytest.raises(PyTautulliException):
+        await client.async_command("test_command")
+
+    mock_response(client, raises=BaseException)
+    with pytest.raises(PyTautulliException):
+        await client.async_command("test_command")
+
+
+@pytest.mark.asyncio
+async def test_method_data(client: PyTautulli):
+    """test_method_data."""
+
+    @api_command("command")
+    async def async_command(self, command: str, **kwargs):
+        return "lorem ipsum"
+
+    client.async_command = async_command
+
+    await client.async_command(client, "test_command")

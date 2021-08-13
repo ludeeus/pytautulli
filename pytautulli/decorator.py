@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import sys
-from traceback import TracebackException
 from typing import TYPE_CHECKING
 
 import aiohttp
@@ -78,6 +76,9 @@ def api_command(
                 ):
                     return func_response
 
+                if client._raw_response or command == "command":
+                    return result
+
             except aiohttp.ClientError as exception:
                 raise PyTautulliConnectionException(
                     client,
@@ -103,10 +104,8 @@ def api_command(
             except (Exception, BaseException) as exception:
                 raise PyTautulliException(client, exception) from exception
 
-            if client._raw_response or command == "command":
-                return result
-
-            return response.data
+            else:
+                return response.data
 
         return wrapper
 
