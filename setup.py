@@ -1,22 +1,34 @@
-"""Setup configuration."""
-import setuptools
+"""The setup script."""
+from setuptools import find_packages, setup
 
-with open("README.md", "r") as fh:
-    LONG = fh.read()
-setuptools.setup(
-    name="pytautulli",
-    version='0.5.1',
+with open("README.md") as readme_file:
+    readme = readme_file.read()
+
+setup(
+    author_email="hi@ludeeus.dev",
     author="Joakim Sorensen",
-    author_email="ludeeus@gmail.com",
-    description="",
-    long_description=LONG,
-    install_requires=['aiohttp', 'async_timeout'],
-    long_description_content_type="text/markdown",
-    url="https://github.com/ludeeus/pytautulli",
-    packages=setuptools.find_packages(),
-    classifiers=(
-        "Programming Language :: Python :: 3",
+    classifiers=[
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ),
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+    version="main",
+    description="Python API wrapper for Tautulli.",
+    install_requires=[
+        "aiohttp>=3.6.1,<4.0",
+        "async_timeout<=3.0.1",
+    ],
+    keywords=["pytautulli", "tautulli", "plex"],
+    license="MIT license",
+    long_description_content_type="text/markdown",
+    long_description=readme,
+    name="pytautulli",
+    packages=find_packages(include=["pytautulli", "pytautulli*"]),
+    python_requires=">=3.8.0",
+    url="https://github.com/ludeeus/pytautulli",
 )

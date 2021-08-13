@@ -1,0 +1,54 @@
+{
+    "response": {
+        "data": [
+            {
+                "allow_guest": 0,
+                "do_notify": 1,
+                "email": null,
+                "filter_all": null,
+                "filter_movies": null,
+                "filter_music": null,
+                "filter_photos": null,
+                "filter_tv": null,
+                "friendly_name": "Local",
+                "is_active": 1,
+                "is_admin": 0,
+                "is_allow_sync": null,
+                "is_home_user": null,
+                "is_restricted": null,
+                "keep_history": 1,
+                "row_id": 1,
+                "server_token": null,
+                "shared_libraries": null,
+                "thumb": null,
+                "user_id": 0,
+                "username": "Local"
+            },
+            {
+                "allow_guest": 0,
+                "do_notify": 1,
+                "email": "username@example.com",
+                "filter_all": "",
+                "filter_movies": "",
+                "filter_music": "",
+                "filter_photos": "",
+                "filter_tv": "",
+                "friendly_name": "Username",
+                "is_active": 1,
+                "is_admin": 1,
+                "is_allow_sync": 1,
+                "is_home_user": 0,
+                "is_restricted": 0,
+                "keep_history": 1,
+                "row_id": 2,
+                "server_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "shared_libraries": "1;2",
+                "thumb": "https://plex.tv/users/xxxxxxxxxxxxxxxx/avatar?c=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "user_id": 3219821,
+                "username": "username"
+            }
+        ],
+        "message": null,
+        "result": "success"
+    }
+}

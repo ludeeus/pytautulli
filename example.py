@@ -1,25 +1,16 @@
 """Example usage of pytautulli."""
 import asyncio
-import json
-import aiohttp
-from pytautulli import Tautulli
+from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
-HOST = '192.168.2.11'
-PORT = '8181'
-API_KEY = '13838dcabfc34f45a6152897fb84c29a'
+IP = "192.168.100.3"
+TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 
-async def test():
+async def async_example():
     """Example usage of pytautulli."""
-    async with aiohttp.ClientSession() as session:
-        data = Tautulli(HOST, PORT, API_KEY, LOOP, session, True)
-        await data.test_connection()
-        await data.get_data()
-
-        print("Connection status:", data.connection_status)
-        print(json.dumps(data.session_data, indent=4, sort_keys=True))
-        print(json.dumps(data.home_data, indent=4, sort_keys=True))
+    host_configuration = PyTautulliHostConfiguration(ipaddress=IP, api_token=TOKEN)
+    async with PyTautulli(host_configuration=host_configuration) as client:
+        print(await client.async_command("get_activity"))
 
 
-LOOP = asyncio.get_event_loop()
-LOOP.run_until_complete(test())
+asyncio.get_event_loop().run_until_complete(async_example())
