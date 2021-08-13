@@ -16,6 +16,8 @@ from .models import (
 class PyTautulli:
     """A class for handling connections with a Tautulli instance."""
 
+    _close_session = False
+
     def __init__(
         self,
         host_configuration: PyTautulliHostConfiguration | None = None,
@@ -39,9 +41,22 @@ class PyTautulli:
                 if key is not None:
                     host_configuration[key] = key
 
+        if session is None:
+            session = ClientSession()
+            self._close_session = True
+
         self._host = host_configuration
         self._session = session
         self._request_timeout = request_timeout
+
+    async def __aenter__(self) -> PyTautulli:
+        """Async enter."""
+        return self
+
+    async def __aexit__(self, *exc_info) -> None:
+        """Async exit."""
+        if self._session and self._close_session:
+            await self._session.close()
 
     @api_command(command="get_activity", datatype=PyTautulliApiActivity)
     async def async_get_activity(self, **kwargs) -> PyTautulliApiActivity:
