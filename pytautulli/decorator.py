@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import aiohttp
 import async_timeout
 
-from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, LOGGER
+from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, HTTPMethod, LOGGER
 from .exceptions import (
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
@@ -21,7 +21,11 @@ if TYPE_CHECKING:
     from .client import PyTautulli
 
 
-def api_command(command: str, datatype: PyTautulliApiBaseModel, method: str = "GET"):
+def api_command(
+    command: str,
+    datatype: PyTautulliApiBaseModel | None = None,
+    method: HTTPMethod = HTTPMethod.GET,
+):
     """Decorator for Tautulli API request"""
 
     def decorator(func):
@@ -42,7 +46,7 @@ def api_command(command: str, datatype: PyTautulliApiBaseModel, method: str = "G
                     client._request_timeout, loop=asyncio.get_event_loop()
                 ):
                     request = await client._session.request(
-                        method=method,
+                        method=method.value,
                         url=url,
                         headers=API_HEADERS,
                         verify_ssl=client._host.verify_ssl,

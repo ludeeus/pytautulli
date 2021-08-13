@@ -1,8 +1,6 @@
 """A class for handling connections with a Tautulli instance."""
 from __future__ import annotations
 
-from typing import Any
-
 from aiohttp import ClientSession
 
 from .decorator import api_command
@@ -24,6 +22,7 @@ class PyTautulli:
         session: ClientSession | None = None,
         hostname: str | None = None,
         ipaddress: str | None = None,
+        url: str | None = None,
         api_key: str | None = None,
         port: int | None = None,
         ssl: bool | None = None,
@@ -34,7 +33,7 @@ class PyTautulli:
         """Initialize"""
         if host_configuration is None:
             host_configuration = PyTautulliHostConfiguration(
-                hostname=hostname, ipaddress=ipaddress, api_key=api_key
+                hostname=hostname, ipaddress=ipaddress, url=url, api_key=api_key
             )
             for key in (port, ssl, verify_ssl, base_api_path):
                 if key is not None:

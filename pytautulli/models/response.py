@@ -30,6 +30,9 @@ class PyTautulliApiResponse(PyTautulliApiBaseModel):
 
     def _generate_data(self, data: dict[str, Any] | list[dict[str, Any]]) -> None:
         """Generate data."""
+        if self._datatype is None:
+            return data
+
         if self._datatype._responsetype == APIResponseType.LIST:
             return [self._datatype(item, self._datatype) for item in data]
 

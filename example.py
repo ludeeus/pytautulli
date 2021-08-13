@@ -6,7 +6,7 @@ import aiohttp
 from pytautulli import PyTautulli, PyTautulliHostConfiguration
 
 HOST_CONFIGURATION = PyTautulliHostConfiguration(
-    ipaddress="192.168.100.3", api_key="392a2d57905341acb5bc58c95d4d2795"
+    url="http://192.168.100.3:8181", api_key="392a2d57905341acb5bc58c95d4d2795"
 )
 
 
