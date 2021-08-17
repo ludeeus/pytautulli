@@ -14,7 +14,11 @@ class PyTautulliJJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         """Default JSON encoder."""
         if isinstance(obj, PyTautulliApiBaseModel):
-            return obj.attributes
+            return {
+                key: value
+                for key, value in obj.__dict__.items()
+                if not key.startswith("_")
+            }
         if isinstance(obj, Enum):
             return obj.name
         return json.JSONEncoder.default(self, obj)
@@ -49,9 +53,9 @@ class PyTautulliApiBaseModel:
     def __repr__(self) -> str:
         """Representation."""
         attrs = [
-            f"{key}={json.dumps(self.__dict__[key], cls=PyTautulliJJSONEncoder)}"
-            for key in self.attributes
-            if self.__dict__[key] is not None and "token" not in key
+            f"{key}={value}"
+            for key, value in self.attributes.items()
+            if value is not None and "token" not in key
         ]
         return f"{self.__class__.__name__}({', '.join(attrs)})"
 
