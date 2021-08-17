@@ -19,4 +19,6 @@ class PyTautulliApiActivity(PyTautulliApiBaseModel):
 
     def __post_init__(self):
         super().__post_init__()
-        self.sessions = [PyTautulliApiSession(session) for session in self.sessions]
+        self.sessions = [
+            PyTautulliApiSession(session) for session in self.sessions or []
+        ]
