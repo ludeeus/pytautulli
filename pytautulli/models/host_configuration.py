@@ -34,19 +34,17 @@ class PyTautulliHostConfiguration:
         """Return the generated base URL based on host configuration."""
         if self.url is not None:
             return f"{self.url}/api/v2?apikey={self.api_token}&cmd={command}"
-        protocol = f"http{'s' if self.ssl else ''}"
-        host = self.hostname or self.ipaddress
-        if self.port:
-            host = f"{host}:{str(self.port)}"
-        path = f"/api/v2?apikey={self.api_token}&cmd={command}"
-        url = f"{protocol}://{host}"
-        if self.base_api_path:
-            path = f"{self.base_api_path}{path}"
-            url = url + self.base_api_path
-            
-        return f"{protocol}://{host}{path}", url
+        path = f"/api/v2?apikey={self.api_token}&cmd={command}"            
+        return f"{self.base_url}{path}"
 
     @property
     def base_url(self) -> str:
         """Return the base URL for the configured service."""
-        return self.api_url("")[1]
+        protocol = f"http{'s' if self.ssl else ''}"
+        host = self.hostname or self.ipaddress
+        if self.port:
+            host = f"{host}:{str(self.port)}"
+        url = f"{protocol}://{host}"
+        if self.base_api_path:
+            url = url + self.base_api_path
+        return url
