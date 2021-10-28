@@ -32,7 +32,8 @@ def api_command(
         async def wrapper(*args, **kwargs):
             """Wrapper"""
             client: PyTautulli = args[0]
-            url = client._host.api_url(command if command != "command" else args[1])
+            host = client._host
+            url, client.url = host.api_url(command if command != "command" else args[1])
             if kwargs:
                 for key, value in kwargs.items():
                     url += f"&{key}={value}"

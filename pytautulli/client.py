@@ -39,6 +39,7 @@ class PyTautulli:
         redact: bool = True,
     ) -> None:
         """Initialize"""
+        self.url: str | None = None
         if host_configuration is None:
             host_configuration = PyTautulliHostConfiguration(
                 hostname=hostname, ipaddress=ipaddress, url=url, api_token=api_token

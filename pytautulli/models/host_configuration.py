@@ -39,6 +39,9 @@ class PyTautulliHostConfiguration:
         if self.port:
             host = f"{host}:{str(self.port)}"
         path = f"/api/v2?apikey={self.api_token}&cmd={command}"
+        url = f"{protocol}://{host}"
         if self.base_api_path:
             path = f"{self.base_api_path}{path}"
-        return f"{protocol}://{host}{path}"
+            url = url + self.base_api_path
+            
+        return f"{protocol}://{host}{path}", url
