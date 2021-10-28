@@ -18,7 +18,6 @@ class PyTautulliHostConfiguration:
     verify_ssl: bool = True
     base_api_path: str | None = None
     url: str | None = None
-    base_url: str | None = None
 
     def __post_init__(self):
         """post init."""
@@ -40,9 +39,14 @@ class PyTautulliHostConfiguration:
         if self.port:
             host = f"{host}:{str(self.port)}"
         path = f"/api/v2?apikey={self.api_token}&cmd={command}"
-        self.base_url = f"{protocol}://{host}"
+        url = f"{protocol}://{host}"
         if self.base_api_path:
             path = f"{self.base_api_path}{path}"
-            self.base_url = self.base_url + self.base_api_path
+            url = url + self.base_api_path
             
-        return f"{protocol}://{host}{path}"
+        return f"{protocol}://{host}{path}", url
+
+    @property
+    def base_url(self) -> str:
+        """Return the base URL for the configured service."""
+        return self.api_url("")[1]
