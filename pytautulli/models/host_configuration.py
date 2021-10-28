@@ -43,5 +43,4 @@ class PyTautulliHostConfiguration:
         host = self.hostname or self.ipaddress
         if self.port:
             host = f"{host}:{str(self.port)}"
-        url = f"{protocol}://{host}"
-        return f"{url}{self.base_api_path}" if self.base_api_path else url
+        return f"{protocol}://{host}{self.base_api_path or ''}"
