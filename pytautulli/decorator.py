@@ -39,9 +39,7 @@ def api_command(
 
             LOGGER.debug("Requesting %s", client.redact_string(url))
             try:
-                async with async_timeout.timeout(
-                    client._request_timeout, loop=asyncio.get_event_loop()
-                ):
+                async with async_timeout.timeout(client._request_timeout):
                     request = await client._session.request(
                         method=method.value,
                         url=url,
