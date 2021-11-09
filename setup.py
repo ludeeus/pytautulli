@@ -19,10 +19,7 @@ setup(
     ],
     version="main",
     description="Python API wrapper for Tautulli.",
-    install_requires=[
-        "aiohttp>=3.6.1,<4.0",
-        "async_timeout<4.0.1",
-    ],
+    install_requires=["aiohttp>=3.6.1,<4.0"],
     keywords=["pytautulli", "tautulli", "plex"],
     license="MIT license",
     long_description_content_type="text/markdown",
