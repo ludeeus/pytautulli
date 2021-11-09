@@ -11,7 +11,9 @@ class PyTautulliException(Exception):
     """Base pytautulli exception."""
 
     def __init__(
-        self, client: PyTautulli | None = None, message: str | Exception = ""
+        self,
+        client: PyTautulli | None = None,
+        message: str | Exception = "",
     ) -> None:
         super().__init__(
             client.redact_string(str(message)) if client is not None else message

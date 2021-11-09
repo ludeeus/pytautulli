@@ -39,31 +39,31 @@ def api_command(
 
             LOGGER.debug("Requesting %s", client.redact_string(url))
             try:
-                async with async_timeout.timeout(client._request_timeout):
-                    request = await client._session.request(
-                        method=method.value,
-                        url=url,
-                        headers=API_HEADERS,
-                        verify_ssl=client._host.verify_ssl,
-                    )
+                request = await client._session.request(
+                    method=method.value,
+                    url=url,
+                    headers=API_HEADERS,
+                    verify_ssl=client._host.verify_ssl,
+                    timeout=aiohttp.ClientTimeout(client._request_timeout),
+                )
 
-                    result = await request.json()
+                result = await request.json()
 
-                    response = PyTautulliApiResponse(
-                        data=result.get(ATTR_RESPONSE, {}),
-                        datatype=datatype,
-                    )
+                response = PyTautulliApiResponse(
+                    data=result.get(ATTR_RESPONSE, {}),
+                    datatype=datatype,
+                )
 
-                    if request.status != 200:
+                if request.status != 200:
 
-                        if request.status == 401:
-                            raise PyTautulliAuthenticationException(
-                                client, response.message
-                            )
-                        raise PyTautulliConnectionException(
-                            client,
-                            f"Request for '{url}' failed with status code '{request.status}'",
+                    if request.status == 401:
+                        raise PyTautulliAuthenticationException(
+                            client, response.message
                         )
+                    raise PyTautulliConnectionException(
+                        client,
+                        f"Request for '{url}' failed with status code '{request.status}'",
+                    )
 
                 LOGGER.debug(
                     "Requesting %s returned %s", client.redact_string(url), result
