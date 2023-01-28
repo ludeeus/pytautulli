@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+import pytest_asyncio
 from aiohttp import ClientSession
 
 from pytautulli import PyTautulli
@@ -21,7 +22,7 @@ def response():
     yield MockResponse()
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def client_session(response, requests):
     async def _mocked_request(*args, **kwargs):
         response.url = args[1]
@@ -34,7 +35,7 @@ async def client_session(response, requests):
         yield session
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def client(client_session):
     async with PyTautulli(
         session=client_session, host_configuration=TEST_HOST_CONFIGURATION
