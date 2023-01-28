@@ -50,5 +50,5 @@
 - [ ] The code change is tested and works locally.
 - [ ] Local tests pass.
 - [ ] There is no commented out code in this PR.
-- [ ] The code has been formatted (`make lint`)
+- [ ] The code has been formatted (`scripts/lint`)
 - [ ] Tests have been added to verify that the new code works.
