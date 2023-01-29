@@ -13,5 +13,4 @@ async def async_example():
     async with PyTautulli(host_configuration=host_configuration) as client:
         print(await client.async_command("get_activity"))
 
-
-asyncio.get_event_loop().run_until_complete(async_example())
+asyncio.run(async_example())

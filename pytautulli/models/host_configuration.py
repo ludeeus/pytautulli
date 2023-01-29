@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from yarl import URL
+
 from ..exceptions import PyTautulliException
 
 
@@ -32,15 +34,26 @@ class PyTautulliHostConfiguration:
 
     def api_url(self, command: str) -> str:
         """Return the generated base URL based on host configuration."""
-        return f"{self.base_url}/api/v2?apikey={self.api_token}&cmd={command}"
+        base_url = self.base_url
+        path = "/".join(x for x in f"{base_url.path}/api/v2".split("/") if x != "")
+        return URL.build(
+            scheme=base_url.scheme,
+            host=base_url.host,
+            port=base_url.port,
+            path=f"/{path}",
+            query={"apikey": self.api_token, "cmd": command},
+        ).human_repr()
 
     @property
-    def base_url(self) -> str:
+    def base_url(self) -> URL:
         """Return the base URL for the configured service."""
-        if self.url is not None:
-            return self.url
-        protocol = f"http{'s' if self.ssl else ''}"
-        host = self.hostname or self.ipaddress
-        if self.port:
-            host = f"{host}:{str(self.port)}"
-        return f"{protocol}://{host}{self.base_api_path or ''}"
+        return (
+            URL(self.url)
+            if self.url is not None
+            else URL.build(
+                scheme=f"http{'s' if self.ssl else ''}",
+                host=self.hostname or self.ipaddress,
+                port=str(self.port) if self.port else None,
+                path=self.base_api_path or "",
+            )
+        )

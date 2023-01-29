@@ -11,6 +11,7 @@ from pytautulli import (
     PyTautulliAuthenticationException,
     PyTautulliConnectionException,
     PyTautulliException,
+    PyTautulliHostConfiguration,
     PyTautulliJJSONEncoder,
 )
 from pytautulli.const import HTTPMethod
@@ -172,3 +173,33 @@ def test_json():
     assert encoder.default(HTTPMethod.GET) == "GET"
     with pytest.raises(TypeError):
         assert encoder.default(None)
+
+
+def test_api_url():
+    """Test api_url."""
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com")
+    assert config.api_url("") == "http://test.com:80/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com/")
+    assert config.api_url("") == "http://test.com:80/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com//")
+    assert config.api_url("") == "http://test.com:80/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com/test")
+    assert config.api_url("") == "http://test.com:80/test/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com/test/")
+    assert config.api_url("") == "http://test.com:80/test/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="http://test.com/test//")
+    assert config.api_url("") == "http://test.com:80/test/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="https://test.com/")
+    assert config.api_url("") == "https://test.com:443/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="https://test.com:80/")
+    assert config.api_url("") == "https://test.com:80/api/v2?apikey=test&cmd="
+
+    config = PyTautulliHostConfiguration(api_token="test", url="https://test.com:80/")
+    assert config.api_url("") == "https://test.com:80/api/v2?apikey=test&cmd="
