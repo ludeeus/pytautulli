@@ -14,4 +14,4 @@ async def async_example():
         print(await client.async_command("get_activity"))
 
 
-asyncio.get_event_loop().run_until_complete(async_example())
+asyncio.run(async_example())
