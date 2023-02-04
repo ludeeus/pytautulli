@@ -55,7 +55,6 @@ def api_command(
                 )
 
                 if request.status != 200:
-
                     if request.status == 401:
                         raise PyTautulliAuthenticationException(
                             client, response.message
