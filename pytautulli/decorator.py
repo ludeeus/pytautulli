@@ -5,7 +5,6 @@ import asyncio
 from typing import TYPE_CHECKING
 
 import aiohttp
-import async_timeout
 
 from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, LOGGER, HTTPMethod
 from .exceptions import (
