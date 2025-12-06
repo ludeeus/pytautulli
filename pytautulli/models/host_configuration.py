@@ -54,7 +54,7 @@ class PyTautulliHostConfiguration:
             else URL.build(
                 scheme=f"http{'s' if self.ssl else ''}",
                 host=self.hostname or self.ipaddress,
-                port=str(self.port) if self.port else None,
+                port=self.port,
                 path=self.base_api_path or "",
             )
         )
