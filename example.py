@@ -1,4 +1,5 @@
 """Example usage of pytautulli."""
+
 import asyncio
 
 from pytautulli import PyTautulli, PyTautulliHostConfiguration
