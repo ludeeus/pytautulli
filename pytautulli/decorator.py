@@ -8,11 +8,8 @@ from typing import TYPE_CHECKING
 import aiohttp
 
 from .const import API_HEADERS, ATTR_DATA, ATTR_RESPONSE, LOGGER, HTTPMethod
-from .exceptions import (
-    PyTautulliAuthenticationException,
-    PyTautulliConnectionException,
-    PyTautulliException,
-)
+from .exceptions import (PyTautulliAuthenticationException,
+                         PyTautulliConnectionException, PyTautulliException)
 from .models import PyTautulliApiBaseModel, PyTautulliApiResponse
 
 if TYPE_CHECKING:
