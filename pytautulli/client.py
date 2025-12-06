@@ -1,4 +1,5 @@
 """A class for handling connections with a Tautulli instance."""
+
 from __future__ import annotations
 
 from copy import copy
