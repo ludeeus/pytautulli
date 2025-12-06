@@ -1,7 +1,7 @@
 # pytautulli
 
 [![codecov](https://codecov.io/gh/ludeeus/pytautulli/branch/main/graph/badge.svg)](https://codecov.io/gh/ludeeus/pytautulli)
-![python version](https://img.shields.io/badge/Python-3.8=><=3.10-blue.svg)
+![python version](https://img.shields.io/badge/Python-3.14+-blue.svg)
 [![PyPI](https://img.shields.io/pypi/v/pytautulli)](https://pypi.org/project/pytautulli)
 ![Actions](https://github.com/ludeeus/pytautulli/workflows/Actions/badge.svg?branch=main)
 

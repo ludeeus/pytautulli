@@ -13,9 +13,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.14",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     version="main",
@@ -27,6 +25,6 @@ setup(
     long_description=readme,
     name="pytautulli",
     packages=find_packages(include=["pytautulli", "pytautulli*"]),
-    python_requires=">=3.8.0",
+    python_requires=">=3.14.0",
     url="https://github.com/ludeeus/pytautulli",
 )
