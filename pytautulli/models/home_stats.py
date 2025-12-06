@@ -1,4 +1,5 @@
 """PyTautulliApiHomeStats."""
+
 from __future__ import annotations
 
 from pytautulli.models.user import PyTautulliApiUser
