@@ -1,4 +1,5 @@
 """Pytautulli constants."""
+
 from enum import Enum
 from logging import Logger, getLogger
 

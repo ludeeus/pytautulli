@@ -1,4 +1,5 @@
 """PyTautulli models."""
+
 from .activity import *
 from .base import *
 from .home_stats import *

@@ -1,4 +1,5 @@
 """API response model for PyTautulli Api.."""
+
 from __future__ import annotations
 
 from enum import Enum
@@ -20,11 +21,14 @@ class APIResult(str, Enum):
 class PyTautulliApiResponse(PyTautulliApiBaseModel):
     """API response model for PyTautulli Api."""
 
-    data: dict[str, Any] | list[
+    data: (
         dict[str, Any]
-    ] | PyTautulliApiActivity | PyTautulliApiSession | list[
-        PyTautulliApiUser
-    ] | None = None
+        | list[dict[str, Any]]
+        | PyTautulliApiActivity
+        | PyTautulliApiSession
+        | list[PyTautulliApiUser]
+        | None
+    ) = None
     message: str | None = None
     result: APIResult | None = None
 
