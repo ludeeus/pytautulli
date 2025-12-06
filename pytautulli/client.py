@@ -8,9 +8,13 @@ from typing import Any
 from aiohttp import ClientSession
 
 from .decorator import api_command
-from .models import (PyTautulliApiActivity, PyTautulliApiHomeStats,
-                     PyTautulliApiServerInfo, PyTautulliApiUser,
-                     PyTautulliHostConfiguration)
+from .models import (
+    PyTautulliApiActivity,
+    PyTautulliApiHomeStats,
+    PyTautulliApiServerInfo,
+    PyTautulliApiUser,
+    PyTautulliHostConfiguration,
+)
 
 
 class PyTautulli:

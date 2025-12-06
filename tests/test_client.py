@@ -5,14 +5,18 @@ import aiohttp
 import pytest
 from aiohttp.client import ClientSession
 
-from pytautulli import (PyTautulli, PyTautulliApiResponse,
-                        PyTautulliAuthenticationException,
-                        PyTautulliConnectionException, PyTautulliException,
-                        PyTautulliHostConfiguration, PyTautulliJJSONEncoder)
+from pytautulli import (
+    PyTautulli,
+    PyTautulliApiResponse,
+    PyTautulliAuthenticationException,
+    PyTautulliConnectionException,
+    PyTautulliException,
+    PyTautulliHostConfiguration,
+    PyTautulliJJSONEncoder,
+)
 from pytautulli.const import HTTPMethod
 from pytautulli.decorator import api_command
-from tests.common import (TEST_HOST_CONFIGURATION, MockedRequests,
-                          MockResponse, fixture)
+from tests.common import TEST_HOST_CONFIGURATION, MockedRequests, MockResponse, fixture
 
 
 @pytest.mark.asyncio
