@@ -5,5 +5,5 @@ aresponses>=2.1.4
 black==26.3.1
 isort
 pre-commit>=2.13.0
-pytest-cov>=2.12.1
+pytest-cov>=7.1.0
 pytest>=6.2.4
